@@ -6,7 +6,7 @@ const axios = require('axios');
 
 const discordBase = `https://discord.com/api`;
 
-const baseRPCVersion = 61;
+const baseRPCVersion = 68;
 const moddedRPCVersion = 2;
 const RPCVersion = `${moddedRPCVersion}${baseRPCVersion}`;
 
