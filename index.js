@@ -6,9 +6,9 @@ const axios = require('axios');
 
 const discordBase = `https://discord.com/api`;
 
-const baseRPCVersion = 68;
-const moddedRPCVersion = 2;
-const RPCVersion = `${moddedRPCVersion}${baseRPCVersion}`;
+const baseVersion = 51;
+const moddedVersion = 1;
+const coreVersion = `${moddedVersion}${baseVersion}`;
 
 const basicProxy = async (req, res, options = {}) => {
   console.log(`${discordBase}${req.originalUrl}`);
@@ -63,7 +63,7 @@ app.get('/modules/:channel/versions.json', async (req, res) => {
 
   let json = (await basicProxy(req, res)).data;
 
-  json['discord_rpc'] = RPCVersion;
+  json['discord_desktop_core'] = coreVersion;
 
   res.send(JSON.stringify(json));
 });
@@ -71,10 +71,10 @@ app.get('/modules/:channel/versions.json', async (req, res) => {
 app.get('/modules/:channel/:module/:version', async (req, res) => {
   console.log({type: 'download_module', channel: req.params.channel, module: req.params.module, version: req.params.version, hostVersion: req.query.host_version, platform: req.query.platform});
 
-  if (req.params.version === RPCVersion) {
+  if (req.params.version === coreVersion) {
     console.log('sending custom zip');
 
-    res.sendFile(`${__dirname}/moddedRPC/module.zip`);
+    res.sendFile(`${__dirname}/moddedCore/module.zip`);
 
     return;
   }
