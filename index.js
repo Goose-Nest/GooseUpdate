@@ -7,7 +7,7 @@ const axios = require('axios');
 const discordBase = `https://discord.com/api`;
 
 const baseVersion = 51;
-const moddedVersion = 1;
+const moddedVersion = 2;
 const coreVersion = `${moddedVersion}${baseVersion}`;
 
 const basicProxy = async (req, res, options = {}) => {
