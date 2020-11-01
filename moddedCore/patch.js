@@ -41,7 +41,7 @@ const injectCode = (async function() {
 
     bw.webContents.on('dom-ready', () => {
       // bw.webContents.executeJavaScript(`(async function() { alert(1); }).bind(window)();`);
-      bw.webContents.executeJavaScript(`(async function() { alert(1); eval(await (await fetch('https://goosemod-api.netlify.app/untethered/untetheredInject.js')).text()); })();`);
+      bw.webContents.executeJavaScript(`(async function() { eval(await (await fetch('https://goosemod-api.netlify.app/untethered/untetheredInject.js')).text()); })();`);
     });
   }, 100);
 }); //(await axios.get('https://goosemod-api.netlify.app/untethered/untetheredInject.js')).data;
