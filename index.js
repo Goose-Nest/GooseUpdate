@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const port = 1337;
+const port = 80;
 
 const axios = require('axios');
 const fs = require('fs');
@@ -11,7 +11,7 @@ const archiver = require('archiver');
 
 const discordBase = `https://discord.com/api`;
 
-const moddedVersion = 4;
+const moddedVersion = 5;
 const patchCode = fs.readFileSync(`${__dirname}/patch.js`, 'utf-8');
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -107,12 +107,19 @@ app.get('/modules/:channel/:module/:version', async (req, res) => {
 
     const cacheExtractDir = `${cacheDir}/extract`;
 
-    s.pipe(unzipper.Extract({ path: `${cacheExtractDir}` }));
+    let t = s.pipe(unzipper.Extract({ path: `${cacheExtractDir}` }));
+    // console.log(t);
 
-    while (!fs.existsSync(`${cacheExtractDir}`)) {
+    /*while (!fs.existsSync(`${cacheExtractDir}/package.json`)) {
       console.log('Waiting for extract...');
       await sleep(10);
-    }
+    }*/
+
+    console.log('waiting');
+
+    await new Promise(res => t.on('finish', res));
+
+    console.log('waited');
 
     console.log('Extract finished');
 
