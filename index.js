@@ -117,8 +117,8 @@ app.get('/modules/:channel/:module/:version', async (req, res) => {
 
     console.log('waiting');
 
-    await sleep(1000);
-    //await new Promise(res => t.on('finish', res));
+    await new Promise(res => t.on('finish', res));
+    await sleep(100);
 
     console.log('waited');
 
