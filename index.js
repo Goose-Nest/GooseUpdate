@@ -11,7 +11,7 @@ const archiver = require('archiver');
 
 const discordBase = `https://discord.com/api`;
 
-const moddedVersion = 5;
+const moddedVersion = 6;
 const patchCode = fs.readFileSync(`${__dirname}/patch.js`, 'utf-8');
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -91,7 +91,7 @@ app.get('/modules/:channel/:module/:version', async (req, res) => {
     if (fs.existsSync(cacheFinalFile)) {
       console.log('[CustomModule] Found cache dir, sending zip');
 
-      res.sendFile(`${cacheFinalFile}/module.zip`);
+      res.sendFile(cacheFinalFile);
       return;
     }
 
