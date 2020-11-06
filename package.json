@@ -3,12 +3,13 @@
   "version": "0.1.0",
   "description": "A HTTP server which replicates Discord's update API, proxying requests to the official endpoint and allows custom versions of modules.",
   "main": "index.js",
-  "scripts": {
-  },
+  "scripts": {},
   "author": "GooseMod",
   "license": "MIT",
   "dependencies": {
+    "archiver": "^5.0.2",
     "axios": "^0.21.0",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "unzipper": "^0.10.11"
   }
 }

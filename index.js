@@ -1,19 +1,27 @@
 const express = require('express');
 const app = express();
-const port = 80;
+const port = 1337;
 
 const axios = require('axios');
+const fs = require('fs');
+
+const stream = require('stream');
+const unzipper = require('unzipper');
+const archiver = require('archiver');
 
 const discordBase = `https://discord.com/api`;
 
-const baseVersion = 51;
-const moddedVersion = 3;
-const coreVersion = `${moddedVersion}${baseVersion}`;
+const moddedVersion = 4;
+const patchCode = fs.readFileSync(`${__dirname}/patch.js`, 'utf-8');
 
-const basicProxy = async (req, res, options = {}) => {
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+const basicProxy = async (req, res, options = {}, rpl = undefined) => {
   console.log(`${discordBase}${req.originalUrl}`);
 
-  let prox = await axios.get(`${discordBase}${req.originalUrl}`, options);
+  console.log(rpl !== undefined ? req.originalUrl.replace(rpl[0], rpl[1]) : req.originalUrl);
+
+  let prox = await axios.get(`${discordBase}${rpl !== undefined ? req.originalUrl.replace(rpl[0], rpl[1]) : req.originalUrl}`, options);
 
   res.status(prox.status);
 
@@ -63,7 +71,7 @@ app.get('/modules/:channel/versions.json', async (req, res) => {
 
   let json = (await basicProxy(req, res)).data;
 
-  json['discord_desktop_core'] = coreVersion;
+  json['discord_desktop_core'] = parseInt(`${moddedVersion}${json['discord_desktop_core'].toString()}`);
 
   res.send(JSON.stringify(json));
 });
@@ -71,10 +79,88 @@ app.get('/modules/:channel/versions.json', async (req, res) => {
 app.get('/modules/:channel/:module/:version', async (req, res) => {
   console.log({type: 'download_module', channel: req.params.channel, module: req.params.module, version: req.params.version, hostVersion: req.query.host_version, platform: req.query.platform});
 
-  if (req.params.version === coreVersion) {
-    console.log('sending custom zip');
+  if (req.params.module === 'discord_desktop_core') {
+    console.log(`[CustomModule] ${req.params.module} - version: ${req.params.version}`);
 
-    res.sendFile(`${__dirname}/moddedCore/module.zip`);
+    console.log('[CustomModule] Checking cache');
+
+    const cacheName = `${req.params.module}-${req.params.version}`;
+    const cacheDir = `${__dirname}/cache/${cacheName}`;
+    const cacheFinalFile = `${cacheDir}/module.zip`;
+
+    if (fs.existsSync(cacheFinalFile)) {
+      console.log('[CustomModule] Found cache dir, sending zip');
+
+      res.sendFile(`${cacheFinalFile}/module.zip`);
+      return;
+    }
+
+    console.log('[CustomModule] Could not find cache dir, creating custom version');
+
+    const prox = await basicProxy(req, res, {
+      responseType: 'arraybuffer'
+    }, [req.params.version, req.params.version.substring(moddedVersion.toString().length)]);
+
+    console.time('fromNetwork');
+
+    let s = stream.Readable.from(prox.data);
+
+    const cacheExtractDir = `${cacheDir}/extract`;
+
+    s.pipe(unzipper.Extract({ path: `${cacheExtractDir}` }));
+
+    while (!fs.existsSync(`${cacheExtractDir}`)) {
+      console.log('Waiting for extract...');
+      await sleep(10);
+    }
+
+    console.log('Extract finished');
+
+    console.time('fromExtract');
+
+    console.log('Patching file');
+
+    let code = fs.readFileSync(`${cacheExtractDir}/index.js`, 'utf-8');
+
+    code = `${patchCode}\n\n${code}`;
+
+    fs.writeFileSync(`${cacheExtractDir}/index.js`, code);
+
+    console.log('Creating new final zip');
+
+    const outputStream = fs.createWriteStream(`${cacheFinalFile}`);
+
+    const archive = archiver('zip');
+
+    archive.pipe(outputStream);
+
+    archive.directory(cacheExtractDir, false);
+
+    archive.finalize();
+
+    console.log('Waiting for archive to finish');
+
+    await new Promise(res => outputStream.on('close', res));
+
+    console.log('Finished - sending file');
+
+    console.timeEnd('fromNetwork');
+    console.timeEnd('fromExtract');
+
+    res.sendFile(cacheFinalFile);
+
+    s.destroy();
+
+    outputStream.close();
+    outputStream.destroy();
+
+    /*fs.rmdir(cacheExtractDir, { recursive: true }, (err) => {
+      console.log('a', err);
+    })*/
+
+    //console.log(prox);
+  
+    //fs.writeFileSync(`${cacheDir}/original.zip`, prox.data);
 
     return;
   }
@@ -87,6 +173,17 @@ app.get('/modules/:channel/:module/:version', async (req, res) => {
 
   res.send(prox.data);
 });
+
+const initCache = () => {
+  if (fs.existsSync(`${__dirname}/cache`)) {
+    fs.rmdirSync(`${__dirname}/cache`, { recursive: true });
+    //return;
+  }
+
+  fs.mkdirSync(`${__dirname}/cache`);
+};
+
+initCache();
 
 app.listen(port, () => {
   console.log(`Listening at http://localhost:${port}`)
