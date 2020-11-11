@@ -13,8 +13,8 @@ const archiver = require('archiver');
 
 const discordBase = `https://discord.com/api`;
 
-const moddedVersion = 6;
 const patchCode = fs.readFileSync(`${__dirname}/patch.js`, 'utf-8');
+const moddedVersion = parseInt(patchCode.match(/const version = ([0-9]+)/)[1]);
 
 console.log(`Using proxy base: ${discordBase}`);
 console.log(`Modded version: ${moddedVersion}`);
