@@ -1,6 +1,8 @@
 const express = require('express');
 const app = express();
-const port = 80;
+
+const port = process.argv[2] || 80;
+if (!process.argv[2]) console.log(`No port specified in args, using default: ${port}\n`);
 
 const axios = require('axios');
 const fs = require('fs');
@@ -13,6 +15,9 @@ const discordBase = `https://discord.com/api`;
 
 const moddedVersion = 6;
 const patchCode = fs.readFileSync(`${__dirname}/patch.js`, 'utf-8');
+
+console.log(`Using proxy base: ${discordBase}`);
+console.log(`Modded version: ${moddedVersion}`);
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -29,6 +34,8 @@ const basicProxy = async (req, res, options = {}, rpl = undefined) => {
 };
 
 app.get('/', (req, res) => {
+  console.log('[req]', req.originalUrl);
+
   res.sendFile(`${__dirname}/index.html`);
 });
 
@@ -194,5 +201,5 @@ const initCache = () => {
 initCache();
 
 app.listen(port, () => {
-  console.log(`Listening at http://localhost:${port}`)
+  console.log(`\n\nListening on port ${port}`)
 });
