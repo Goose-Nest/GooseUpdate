@@ -1,5 +1,5 @@
 (async function() {
-  const version = 7;
+  const version = 8;
 
   function rgb(r, g, b, text) {
     return `\x1b[38;2;${r};${g};${b}m${text}\x1b[0m`;
@@ -11,7 +11,9 @@
 
   const electron = require('electron');
 
-  log('[GooseMod] Setting up CSP disabler...');
+  log(`GooseUpdate Desktop Core Module Patch - Version ${version}`);
+
+  log('Setting up CSP disabler...');
 
   const cspAllowAll = [
     'connect-src',
