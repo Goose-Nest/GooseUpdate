@@ -1,5 +1,5 @@
 (async function() {
-  const version = 8;
+  const version = 9;
 
   function rgb(r, g, b, text) {
     return `\x1b[38;2;${r};${g};${b}m${text}\x1b[0m`;
@@ -26,11 +26,15 @@
 
     if (csp) {
       for (let p of cspAllowAll) {
-        // console.log(p);
         csp[0] = csp[0].replace(`${p}`, `${p} *`);
       }
 
-      // console.log(csp);
+//      console.log(csp[0]);
+
+      // Fix Discord's broken CSP which disallows unsafe-inline due to having a nonce (which they don't even use?)
+      csp[0] = csp[0].replace(/'nonce-.*?' /, '');
+
+//      console.log(csp[0]);
     }
 
     done({ responseHeaders });
