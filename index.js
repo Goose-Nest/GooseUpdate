@@ -1,6 +1,8 @@
 const express = require('express');
 const app = express();
 
+const version = '1.0.0';
+
 const port = process.argv[2] || 80;
 if (!process.argv[2]) console.log(`No port specified in args, using default: ${port}\n`);
 
@@ -21,14 +23,34 @@ console.log(`Modded version: ${moddedVersion}`);
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
+const cacheStore = {};
+
 const basicProxy = async (req, res, options = {}, rpl = undefined) => {
   console.log(`${discordBase}${req.originalUrl}`);
 
-  console.log(rpl !== undefined ? req.originalUrl.replace(rpl[0], rpl[1]) : req.originalUrl);
+  console.log(options, rpl);
 
-  let prox = await axios.get(`${discordBase}${rpl !== undefined ? req.originalUrl.replace(rpl[0], rpl[1]) : req.originalUrl}`, options);
+  const url = rpl !== undefined ? req.originalUrl.replace(rpl[0], rpl[1]) : req.originalUrl;
+
+  console.log(url);
+
+  const cached = cacheStore[url];
+
+  if (cached && ((Date.now() - cached.date) / 1000) / 60 < 10) {
+    console.log('cached');
+    return cached.resp;
+  }
+
+  console.log('not cached');
+
+  let prox = await axios.get(`${discordBase}${url}`, options);
 
   res.status(prox.status);
+
+  cacheStore[url] = {
+    resp: prox,
+    date: Date.now()
+  };
 
   return prox;
 };
@@ -41,6 +63,8 @@ app.get('/', (req, res) => {
 
 app.all('*', (req, res, next) => {
   console.log('[req]', req.originalUrl);
+
+  res.set('Server', `GooseUpdate v${version}`);
   next();
 });
 
@@ -76,7 +100,9 @@ app.get('/updates/:channel', async (req, res) => {
 app.get('/modules/:channel/versions.json', async (req, res) => {
   console.log({type: 'check_for_module_updates', channel: req.params.channel});
 
-  let json = (await basicProxy(req, res)).data;
+  let json = Object.assign({}, (await basicProxy(req, res)).data);
+
+  console.log('desktop_core', json['discord_desktop_core']);
 
   json['discord_desktop_core'] = parseInt(`${moddedVersion}${json['discord_desktop_core'].toString()}`);
 
@@ -115,12 +141,6 @@ app.get('/modules/:channel/:module/:version', async (req, res) => {
     const cacheExtractDir = `${cacheDir}/extract`;
 
     let t = s.pipe(unzipper.Extract({ path: `${cacheExtractDir}` }));
-    // console.log(t);
-
-    /*while (!fs.existsSync(`${cacheExtractDir}/package.json`)) {
-      console.log('Waiting for extract...');
-      await sleep(10);
-    }*/
 
     console.log('waiting');
 
@@ -168,14 +188,6 @@ app.get('/modules/:channel/:module/:version', async (req, res) => {
 
     outputStream.close();
     outputStream.destroy();
-
-    /*fs.rmdir(cacheExtractDir, { recursive: true }, (err) => {
-      console.log('a', err);
-    })*/
-
-    //console.log(prox);
-  
-    //fs.writeFileSync(`${cacheDir}/original.zip`, prox.data);
 
     return;
   }
