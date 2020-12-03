@@ -86,8 +86,8 @@ app.get('/', (req, res) => {
   };
 
   let percents = {
-    linux: Math.floor(counts.linux / counts.all * 100),
-    windows: Math.floor(counts.windows / counts.all * 100)
+    linux: Math.round(counts.linux / counts.all * 100),
+    windows: Math.round(counts.windows / counts.all * 100)
   };
 
   let segment1 = `<div class="pie__segment" style="--offset: 0; --value: ${percents.linux}; --over50: ${percents.linux > 50 ? 1 : 0}; --bg: #db0a5b;">
