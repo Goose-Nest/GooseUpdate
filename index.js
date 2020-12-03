@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 
-const version = '1.0.0';
+const version = '1.1.0';
 
 const port = process.argv[2] || 80;
 if (!process.argv[2]) console.log(`No port specified in args, using default: ${port}\n`);
@@ -12,6 +12,7 @@ const fs = require('fs');
 const stream = require('stream');
 const unzipper = require('unzipper');
 const archiver = require('archiver');
+const { toNamespacedPath } = require('path');
 
 const discordBase = `https://discord.com/api`;
 
@@ -55,10 +56,44 @@ const basicProxy = async (req, res, options = {}, rpl = undefined) => {
   return prox;
 };
 
+let uniqueUsers = {};
+
 app.get('/', (req, res) => {
   console.log('[req]', req.originalUrl);
 
-  res.sendFile(`${__dirname}/index.html`);
+  res.set('Content-Type', 'text/html');
+
+  let temp = fs.readFileSync('index.html', 'utf8');
+
+  const usersValues = Object.values(uniqueUsers);
+
+  temp = temp.replace('TEMPLATE_TOTAL_USERS', `${usersValues.length}`);
+
+  let counts = {
+    linux: usersValues.filter((x) => x === 'linux').length,
+    windows: usersValues.filter((x) => x === 'win').length,
+    all: usersValues.length
+  };
+
+  let percents = {
+    linux: counts.linux / counts.all * 100,
+    windows: counts.windows / counts.all * 100
+  };
+
+  let segment1 = `<div class="pie__segment" style="--offset: 0; --value: ${percents.linux}; --over50: ${percents.linux > 50 ? 1 : 0}; --bg: #db0a5b;">
+  <label class="pie__label">Linux: ${percents.linux}%</label>
+</div>`;
+
+  let segment2 = `<div class="pie__segment" style="--offset: ${percents.linux}; --value: ${percents.windows}; --over50: ${percents.windows > 50 ? 1 : 0}; --bg: #22a7f0;">
+  <label class="pie__label">Windows: ${percents.windows}%</label>
+</div>`;
+
+  temp = temp.replace(`TEMPLATE_PIE_SEGMENT_1`, segment1);
+  temp = temp.replace(`TEMPLATE_PIE_SEGMENT_2`, segment2);
+
+  res.send(temp);
+
+  //res.sendFile(`${__dirname}/index.html`);
 });
 
 app.all('*', (req, res, next) => {
@@ -78,7 +113,7 @@ app.get('/updates/:channel/releases', async (req, res) => { // Windows Squirrel
   //res.send(typeof prox === 'string' ? prox : JSON.stringify(json));
 });
 
-app.get('/updates/:channel', async (req, res) => {
+app.get('/updates/:channel', async (req, res) => { // Non-Squirrel (Linux, MacOS / any not Windows)
   console.log({type: 'host_nonsquirrel', channel: req.params.channel, version: req.query.version, platform: req.query.platform});
   console.log(`${discordBase}${req.originalUrl}`);
 
@@ -98,6 +133,9 @@ app.get('/updates/:channel', async (req, res) => {
 });
 
 app.get('/modules/:channel/versions.json', async (req, res) => {
+  const ip = req.headers['cf-connecting-ip']; // Cloudflare IP
+  uniqueUsers[ip] = req.query.platform;
+
   console.log({type: 'check_for_module_updates', channel: req.params.channel});
 
   let json = Object.assign({}, (await basicProxy(req, res)).data);

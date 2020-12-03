@@ -1,19 +1,161 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <title>GooseMod Updates</title>
+<head>
+  <title>GooseUpdate Dashboard</title>
+  
+  <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
+  <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+    }
 
-    <style>
-      body { background-color: #fcfcfc; color: #333333; margin: 0; padding:0; }
-      h1 { font-size: 1.5em; font-weight: normal; background-color: #9999cc; min-height:2em; line-height:2em; border-bottom: 1px inset black; margin: 0; }
-      h1, p { padding-left: 10px; }
-    </style>
-  </head>
+    * {
+      box-sizing: border-box;
+    }
+    
+    #main {
+      padding: 4vw;
+      padding-top: calc(4vw + 40px);
 
-  <body>
-    <h1>GooseMod Updates</h1>
-    <p>
-      This is the server for GooseMod Updates. You are probably looking for <a href="https://goosemod.tk">the main page</a>.
-    </p>
-  </body>
+      display: flex;
+      gap: 5vw;
+    }
+
+    @media screen and (max-width: 600px) {
+      #main {
+        flex-wrap: wrap;
+      }
+    }
+
+    .column {
+      width: 50%;
+      height: 100%;
+
+      flex: 1 1 50%;
+      display: flex;
+      flex-direction: column;
+
+      gap: 20px;
+    }
+    
+    .demo-card {
+      width: 100%;
+
+      padding: 18px;
+    }
+
+    .demo-card__title {
+      margin-top: 0;
+    }
+
+    .pie {
+      margin: 12px auto;
+  border-radius: 100%;
+  height: 200px;
+  overflow: hidden;
+  position: relative;
+  width: 200px;
+}
+.pie__segment {
+  --a: calc(var(--over50, 0) * -100%);
+  --b: calc((1 + var(--over50, 0)) * 100%);
+  --degrees: calc((var(--offset, 0) / 100) * 360);
+  -webkit-clip-path: polygon(var(--a) var(--a), var(--b) var(--a), var(--b) var(--b), var(--a) var(--b));
+  clip-path: polygon(var(--a) var(--a), var(--b) var(--a), var(--b) var(--b), var(--a) var(--b));
+  height: 100%;
+  position: absolute;
+  transform: translate(0, -50%) rotate(90deg) rotate(calc(var(--degrees) * 1deg));
+  transform-origin: 50% 100%;
+  width: 100%;
+  z-index: calc(1 + var(--over50));
+}
+.pie__segment:after,
+.pie__segment:before {
+  background: var(--bg, #e74c3c);
+  content: '';
+  height: 100%;
+  position: absolute;
+  width: 100%;
+}
+.pie__segment:before {
+  --degrees: calc((var(--value, 45) / 100) * 360);
+  transform: translate(0, 100%) rotate(calc(var(--degrees) * 1deg));
+  transform-origin: 50% 0%;
+}
+.pie__segment:after {
+  opacity: var(--over50, 0);
+}
+
+.pie__label {
+  bottom: 0;
+  left: 0;
+
+  position: absolute;
+  text-align: center;
+
+  width: 50%;
+  z-index: 2;
+
+  font-size: 14px;
+}
+
+  </style>
+</head>
+
+<body>
+  <header class="mdc-top-app-bar">
+    <div class="mdc-top-app-bar__row">
+      <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
+        <span class="mdc-top-app-bar__title">GooseUpdate Dashboard</span>
+      </section>
+      <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end" role="toolbar">
+      </section>
+    </div>
+  </header>
+  
+  <div id="main">
+    <div class="column">
+      <div class="mdc-card demo-card">
+        <div class="" tabindex="0">
+          <div class="demo-card__primary">
+            <h2 class="demo-card__title mdc-typography mdc-typography--headline6">Total Users</h2>
+            <h3 class="demo-card__subtitle mdc-typography mdc-typography--headline2">TEMPLATE_TOTAL_USERS</h3>
+          </div>
+          <div class="demo-card__secondary mdc-typography mdc-typography--body2">The total amount of users who have requested updates this server session</div>
+        </div>
+      </div>
+
+      <div class="mdc-card demo-card">
+        <div class="" tabindex="0">
+          <div class="demo-card__primary">
+            <h2 class="demo-card__title mdc-typography mdc-typography--headline6">OS Demographic</h2>
+            <div class="pie">
+              TEMPLATE_PIE_SEGMENT_1
+              TEMPLATE_PIE_SEGMENT_2
+              <!-- <div class="pie__segment" style="--offset: 0; --value: 25; --bg: #db0a5b;">
+                <label class="pie__label">Linux: 80%</label>
+              </div>
+              <div class="pie__segment" style="--offset: 25; --value: 10; --bg: #22a7f0;"></div>
+              <div class="pie__segment" style="--offset: 35; --value: 60; --bg: #2ecc71; --over50: 1;"></div>
+              <div class="pie__segment" style="--offset: 95; --value: 5; --bg: #4d05e8;"></div> -->
+            </div>
+          </div>
+          <div class="demo-card__secondary mdc-typography mdc-typography--body2">The demographic of OS usage</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="column">
+    </div>
+  </div>
+  
+  <script type="text/javascript">
+    window.mdc.autoInit();
+  </script>
+</body>
 </html>
