@@ -148,8 +148,10 @@ app.get('/modules/:channel/versions.json', async (req, res) => {
 
   console.log({type: 'check_for_module_updates', channel: req.params.channel});
 
-  const ip = req.headers['cf-connecting-ip']; // Cloudflare IP
-  uniqueUsers[ip] = req.query.platform;
+  if (req.query.platform === 'linux' || req.query.platform === 'win') {
+    const ip = req.headers['cf-connecting-ip']; // Cloudflare IP
+    uniqueUsers[ip] = req.query.platform;
+  }
 
   let json = Object.assign({}, (await basicProxy(req, res)).data);
 
