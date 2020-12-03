@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 
-const version = '1.1.0';
+const version = '1.1.1';
 
 const port = process.argv[2] || 80;
 if (!process.argv[2]) console.log(`No port specified in args, using default: ${port}\n`);
@@ -12,7 +12,6 @@ const fs = require('fs');
 const stream = require('stream');
 const unzipper = require('unzipper');
 const archiver = require('archiver');
-const { toNamespacedPath } = require('path');
 
 const discordBase = `https://discord.com/api`;
 
@@ -76,8 +75,8 @@ app.get('/', (req, res) => {
   };
 
   let percents = {
-    linux: counts.linux / counts.all * 100,
-    windows: counts.windows / counts.all * 100
+    linux: Math.round(counts.linux / counts.all * 100),
+    windows: Math.round(counts.windows / counts.all * 100)
   };
 
   let segment1 = `<div class="pie__segment" style="--offset: 0; --value: ${percents.linux}; --over50: ${percents.linux > 50 ? 1 : 0}; --bg: #db0a5b;">
