@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 
-const version = '1.1.1';
+const version = '1.2.0';
 
 const port = process.argv[2] || 80;
 if (!process.argv[2]) console.log(`No port specified in args, using default: ${port}\n`);
@@ -82,12 +82,14 @@ app.get('/', (req, res) => {
   let counts = {
     linux: usersValues.filter((x) => x === 'linux').length,
     windows: usersValues.filter((x) => x === 'win').length,
+    mac: usersValues.filter((x) => x === 'osx').length,
     all: usersValues.length
   };
 
   let percents = {
     linux: Math.round(counts.linux / counts.all * 100),
-    windows: Math.round(counts.windows / counts.all * 100)
+    windows: Math.round(counts.windows / counts.all * 100),
+    mac: Math.round(counts.mac / counts.all * 100)
   };
 
   let segment1 = `<div class="pie__segment" style="--offset: 0; --value: ${percents.linux}; --over50: ${percents.linux > 50 ? 1 : 0}; --bg: #db0a5b;">
@@ -98,8 +100,13 @@ app.get('/', (req, res) => {
   <label class="pie__label">Windows: ${percents.windows}%</label>
 </div>`;
 
+  let segment3 = `<div class="pie__segment" style="--offset: ${percents.linux + percents.windows}; --value: ${percents.mac}; --over50: ${percents.mac > 50 ? 1 : 0}; --bg: #4d05e8;">
+  <label class="pie__label">Mac: ${percents.mac}%</label>
+</div>`;
+
   temp = temp.replace(`TEMPLATE_PIE_SEGMENT_1`, segment1);
   temp = temp.replace(`TEMPLATE_PIE_SEGMENT_2`, segment2);
+  temp = temp.replace(`TEMPLATE_PIE_SEGMENT_3`, segment3);
 
   for (let k in requestCounts) {
     temp = temp.replace(`TEMPLATE_COUNT_${k.toUpperCase()}`, requestCounts[k]);
@@ -148,7 +155,7 @@ app.get('/modules/:channel/versions.json', async (req, res) => {
 
   console.log({type: 'check_for_module_updates', channel: req.params.channel});
 
-  if (req.query.platform === 'linux' || req.query.platform === 'win') {
+  if (req.query.platform === 'linux' || req.query.platform === 'win' || req.query.platform === 'osx') {
     const ip = req.headers['cf-connecting-ip']; // Cloudflare IP
     uniqueUsers[ip] = req.query.platform;
   }
