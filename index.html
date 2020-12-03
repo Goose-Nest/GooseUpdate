@@ -53,6 +53,18 @@
       margin-top: 0;
     }
 
+    .requests {
+      display: flex;
+      flex-wrap: wrap;
+
+      gap: 20px;
+      width: 100%;
+    }
+
+    .requests > .demo-card {
+      width: calc(50% - 20px);
+    }
+
     .pie {
       margin: 12px auto;
   border-radius: 100%;
@@ -126,7 +138,7 @@
             <h2 class="demo-card__title mdc-typography mdc-typography--headline6">Total Users</h2>
             <h3 class="demo-card__subtitle mdc-typography mdc-typography--headline2">TEMPLATE_TOTAL_USERS</h3>
           </div>
-          <div class="demo-card__secondary mdc-typography mdc-typography--body2">The total amount of users who have requested updates this server session</div>
+          <!-- <div class="demo-card__secondary mdc-typography mdc-typography--body2">The total amount of users who have requested updates this server session</div> -->
         </div>
       </div>
 
@@ -145,12 +157,53 @@
               <div class="pie__segment" style="--offset: 95; --value: 5; --bg: #4d05e8;"></div> -->
             </div>
           </div>
-          <div class="demo-card__secondary mdc-typography mdc-typography--body2">The demographic of OS usage</div>
+          <!-- <div class="demo-card__secondary mdc-typography mdc-typography--body2">The demographic of OS usage</div> -->
         </div>
       </div>
     </div>
     
     <div class="column">
+      <div class="requests">
+        <div class="mdc-card demo-card">
+          <div class="" tabindex="0">
+            <div class="demo-card__primary">
+              <h2 class="demo-card__title mdc-typography mdc-typography--headline6">Squirrel Host</h2>
+              <h3 class="demo-card__subtitle mdc-typography mdc-typography--headline4">TEMPLATE_COUNT_HOST_SQUIRREL</h3>
+            </div>
+            <!-- <div class="demo-card__secondary mdc-typography mdc-typography--body2">The total amount of users who have requested updates this server session</div> -->
+          </div>
+        </div>
+
+        <div class="mdc-card demo-card">
+          <div class="" tabindex="0">
+            <div class="demo-card__primary">
+              <h2 class="demo-card__title mdc-typography mdc-typography--headline6">Non-Squirrel Host</h2>
+              <h3 class="demo-card__subtitle mdc-typography mdc-typography--headline4">TEMPLATE_COUNT_HOST_NOTSQUIRREL</h3>
+            </div>
+            <!-- <div class="demo-card__secondary mdc-typography mdc-typography--body2">The total amount of users who have requested updates this server session</div> -->
+          </div>
+        </div>
+
+        <div class="mdc-card demo-card">
+          <div class="" tabindex="0">
+            <div class="demo-card__primary">
+              <h2 class="demo-card__title mdc-typography mdc-typography--headline6">Modules</h2>
+              <h3 class="demo-card__subtitle mdc-typography mdc-typography--headline4">TEMPLATE_COUNT_MODULES</h3>
+            </div>
+            <!-- <div class="demo-card__secondary mdc-typography mdc-typography--body2">The total amount of users who have requested updates this server session</div> -->
+          </div>
+        </div>
+
+        <div class="mdc-card demo-card">
+          <div class="" tabindex="0">
+            <div class="demo-card__primary">
+              <h2 class="demo-card__title mdc-typography mdc-typography--headline6">Module Downloads</h2>
+              <h3 class="demo-card__subtitle mdc-typography mdc-typography--headline4">TEMPLATE_COUNT_MODULE_DOWNLOAD</h3>
+            </div>
+            <!-- <div class="demo-card__secondary mdc-typography mdc-typography--body2">The total amount of users who have requested updates this server session</div> -->
+          </div>
+        </div>
+      </div>
     </div>
   </div>
   

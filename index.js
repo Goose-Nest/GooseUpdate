@@ -56,10 +56,21 @@ const basicProxy = async (req, res, options = {}, rpl = undefined) => {
 };
 
 let uniqueUsers = {};
+let requestCounts = {
+  'host_squirrel': 0,
+  'host_notsquirrel': 0,
+  'modules': 0,
+  'module_download': 0
+};
 
-app.get('/', (req, res) => {
+app.all('*', (req, res, next) => {
   console.log('[req]', req.originalUrl);
 
+  res.set('Server', `GooseUpdate v${version}`);
+  next();
+});
+
+app.get('/', (req, res) => {
   res.set('Content-Type', 'text/html');
 
   let temp = fs.readFileSync('index.html', 'utf8');
@@ -90,19 +101,18 @@ app.get('/', (req, res) => {
   temp = temp.replace(`TEMPLATE_PIE_SEGMENT_1`, segment1);
   temp = temp.replace(`TEMPLATE_PIE_SEGMENT_2`, segment2);
 
+  for (let k in requestCounts) {
+    temp = temp.replace(`TEMPLATE_COUNT_${k.toUpperCase()}`, requestCounts[k]);
+  }
+
   res.send(temp);
 
   //res.sendFile(`${__dirname}/index.html`);
 });
 
-app.all('*', (req, res, next) => {
-  console.log('[req]', req.originalUrl);
-
-  res.set('Server', `GooseUpdate v${version}`);
-  next();
-});
-
 app.get('/updates/:channel/releases', async (req, res) => { // Windows Squirrel
+  requestCounts.host_squirrel++;
+
   console.log({type: 'host_squirrel', id: req.query.id, localVersion: req.query.localVersion, arch: req.query.arch});
 
   let prox = (await basicProxy(req, res)).data;
@@ -113,6 +123,8 @@ app.get('/updates/:channel/releases', async (req, res) => { // Windows Squirrel
 });
 
 app.get('/updates/:channel', async (req, res) => { // Non-Squirrel (Linux, MacOS / any not Windows)
+  requestCounts.host_notsquirrel++;
+
   console.log({type: 'host_nonsquirrel', channel: req.params.channel, version: req.query.version, platform: req.query.platform});
   console.log(`${discordBase}${req.originalUrl}`);
 
@@ -132,10 +144,12 @@ app.get('/updates/:channel', async (req, res) => { // Non-Squirrel (Linux, MacOS
 });
 
 app.get('/modules/:channel/versions.json', async (req, res) => {
-  const ip = req.headers['cf-connecting-ip']; // Cloudflare IP
-  uniqueUsers[ip] = req.query.platform;
+  requestCounts.modules++;
 
   console.log({type: 'check_for_module_updates', channel: req.params.channel});
+
+  const ip = req.headers['cf-connecting-ip']; // Cloudflare IP
+  uniqueUsers[ip] = req.query.platform;
 
   let json = Object.assign({}, (await basicProxy(req, res)).data);
 
@@ -147,6 +161,8 @@ app.get('/modules/:channel/versions.json', async (req, res) => {
 });
 
 app.get('/modules/:channel/:module/:version', async (req, res) => {
+  requestCounts.module_download++;
+
   console.log({type: 'download_module', channel: req.params.channel, module: req.params.module, version: req.params.version, hostVersion: req.query.host_version, platform: req.query.platform});
 
   if (req.params.module === 'discord_desktop_core') {
