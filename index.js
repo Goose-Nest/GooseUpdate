@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 
-const version = '1.2.0';
+const version = '1.2.1';
 
 const port = process.argv[2] || 80;
 if (!process.argv[2]) console.log(`No port specified in args, using default: ${port}\n`);
@@ -70,13 +70,14 @@ app.all('*', (req, res, next) => {
   next();
 });
 
+const indexTemplate = fs.readFileSync('index.html', 'utf8');
+
 app.get('/', (req, res) => {
   res.set('Content-Type', 'text/html');
 
-  let temp = fs.readFileSync('index.html', 'utf8');
-
   const usersValues = Object.values(uniqueUsers);
 
+  let temp = indexTemplate.slice();
   temp = temp.replace('TEMPLATE_TOTAL_USERS', `${usersValues.length}`);
 
   let counts = {
