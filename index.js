@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 
-const version = '1.2.1';
+const version = '1.3.0';
 
 const port = process.argv[2] || 80;
 if (!process.argv[2]) console.log(`No port specified in args, using default: ${port}\n`);
@@ -25,6 +25,25 @@ const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 const cacheStore = {};
 
+const cacheCleaner = () => {
+  for (let k in cacheStore) {
+    const v = cacheStore[k];
+
+    if ((Date.now() - v.lastUsed) / 1000 / 60 / 60 > 1) { // If anything cached was last used longer than an hour ago, remove it
+      delete cacheStore[k];
+    }
+  }
+};
+
+setInterval(cacheCleaner, 1000 * 60 * 60);
+
+/*let proxyStats = {
+  'cached': 0,
+  'not-cached': 0
+};*/
+
+let proxyCacheHitArr = [];
+
 const basicProxy = async (req, res, options = {}, rpl = undefined) => {
   console.log(`${discordBase}${req.originalUrl}`);
 
@@ -34,12 +53,23 @@ const basicProxy = async (req, res, options = {}, rpl = undefined) => {
 
   console.log(url);
 
-  const cached = cacheStore[url];
+  const cacheUrl = url.replace(/&_=[0-9]+$/, '');
+  console.log(cacheUrl);
+  const cached = cacheStore[cacheUrl];
 
-  if (cached && ((Date.now() - cached.date) / 1000) / 60 < 10) {
+  const now = Date.now();
+
+  if (cached && (now - cached.cachedOn) / 1000 / 60 < 10) {
     console.log('cached');
+
+    cached.lastUsed = now;
+
+    proxyCacheHitArr.push('cached');
+
     return cached.resp;
   }
+
+  proxyCacheHitArr.push('not cached');
 
   console.log('not cached');
 
@@ -47,9 +77,11 @@ const basicProxy = async (req, res, options = {}, rpl = undefined) => {
 
   res.status(prox.status);
 
-  cacheStore[url] = {
+  cacheStore[cacheUrl] = {
     resp: prox,
-    date: Date.now()
+
+    cachedOn: now,
+    lastUsed: now
   };
 
   return prox;
@@ -72,42 +104,41 @@ app.all('*', (req, res, next) => {
 
 const indexTemplate = fs.readFileSync('index.html', 'utf8');
 
+const generatePie = (arr) => {
+  const colors = ['#D9434B', '#D9D659', '#2E9BD9', '#8C1D23', '#24678C'];
+  const unique = arr.filter((v, i, s) => s.indexOf(v) === i).sort((a, b) => a.localeCompare(b));
+
+  let offset = 0;
+  const segments = unique.map((u, i) => {
+    const count = arr.filter((x) => x === u).length;
+
+    const percent = Math.ceil(count / arr.length * 100);
+
+    const ret = `<div class="pie__segment" style="--offset: ${offset}; --value: ${percent}; --over50: ${percent > 50 ? 1 : 0}; --bg: ${colors[i % colors.length]};">
+    <label class="pie__label">${u[0].toUpperCase() + u.substring(1)}: ${percent}%</label>
+  </div>`;
+
+    offset += percent;
+
+    return ret;
+  });
+
+  return segments.join('\n');
+};
+
 app.get('/', (req, res) => {
   res.set('Content-Type', 'text/html');
 
   const usersValues = Object.values(uniqueUsers);
+  const usersPlatforms = usersValues.map((x) => x.platform);
+  const usersHostVersions = usersValues.map((x) => x.host_version);
 
   let temp = indexTemplate.slice();
   temp = temp.replace('TEMPLATE_TOTAL_USERS', `${usersValues.length}`);
 
-  let counts = {
-    linux: usersValues.filter((x) => x === 'linux').length,
-    windows: usersValues.filter((x) => x === 'win').length,
-    mac: usersValues.filter((x) => x === 'osx').length,
-    all: usersValues.length
-  };
-
-  let percents = {
-    linux: Math.round(counts.linux / counts.all * 100),
-    windows: Math.round(counts.windows / counts.all * 100),
-    mac: Math.round(counts.mac / counts.all * 100)
-  };
-
-  let segment1 = `<div class="pie__segment" style="--offset: 0; --value: ${percents.linux}; --over50: ${percents.linux > 50 ? 1 : 0}; --bg: #db0a5b;">
-  <label class="pie__label">Linux: ${percents.linux}%</label>
-</div>`;
-
-  let segment2 = `<div class="pie__segment" style="--offset: ${percents.linux}; --value: ${percents.windows}; --over50: ${percents.windows > 50 ? 1 : 0}; --bg: #22a7f0;">
-  <label class="pie__label">Windows: ${percents.windows}%</label>
-</div>`;
-
-  let segment3 = `<div class="pie__segment" style="--offset: ${percents.linux + percents.windows}; --value: ${percents.mac}; --over50: ${percents.mac > 50 ? 1 : 0}; --bg: #4d05e8;">
-  <label class="pie__label">Mac: ${percents.mac}%</label>
-</div>`;
-
-  temp = temp.replace(`TEMPLATE_PIE_SEGMENT_1`, segment1);
-  temp = temp.replace(`TEMPLATE_PIE_SEGMENT_2`, segment2);
-  temp = temp.replace(`TEMPLATE_PIE_SEGMENT_3`, segment3);
+  temp = temp.replace(`TEMPLATE_PIE_OS`, generatePie(usersPlatforms));
+  temp = temp.replace(`TEMPLATE_PIE_HOST_VERSIONS`, generatePie(usersHostVersions));
+  temp = temp.replace(`TEMPLATE_PIE_CACHE`, generatePie(proxyCacheHitArr));
 
   for (let k in requestCounts) {
     temp = temp.replace(`TEMPLATE_COUNT_${k.toUpperCase()}`, requestCounts[k]);
@@ -118,25 +149,27 @@ app.get('/', (req, res) => {
   //res.sendFile(`${__dirname}/index.html`);
 });
 
-app.get('/updates/:channel/releases', async (req, res) => { // Windows Squirrel
+app.get('/updates/:channel/releases', async (req, res) => { // Squirrel (non-Linux)
   requestCounts.host_squirrel++;
 
   console.log({type: 'host_squirrel', id: req.query.id, localVersion: req.query.localVersion, arch: req.query.arch});
 
   let prox = (await basicProxy(req, res)).data;
 
+  console.log(prox);
+
   res.send(prox);
 
   //res.send(typeof prox === 'string' ? prox : JSON.stringify(json));
 });
 
-app.get('/updates/:channel', async (req, res) => { // Non-Squirrel (Linux, MacOS / any not Windows)
+app.get('/updates/:channel', async (req, res) => { // Non-Squirrel (Linux)
   requestCounts.host_notsquirrel++;
 
   console.log({type: 'host_nonsquirrel', channel: req.params.channel, version: req.query.version, platform: req.query.platform});
   console.log(`${discordBase}${req.originalUrl}`);
 
-  try { // If no response within X (500) ms there is no update (it does not close the response correctly)
+  /*try { // If no response within X (500) ms there is no update (it does not close the response correctly)
     let prox = await axios.get(`${discordBase}${req.originalUrl}`, {
       timeout: 500
     });
@@ -148,7 +181,17 @@ app.get('/updates/:channel', async (req, res) => { // Non-Squirrel (Linux, MacOS
     res.status(204);
 
     res.send();
-  }
+  }*/
+
+  /*let prox = await axios.get(`${discordBase}${req.originalUrl}`, {
+    // timeout: 500
+  });*/
+
+  const prox = await basicProxy(req, res);
+
+  res.status(prox.status);
+
+  res.send(JSON.stringify(prox.data));
 });
 
 app.get('/modules/:channel/versions.json', async (req, res) => {
@@ -158,12 +201,14 @@ app.get('/modules/:channel/versions.json', async (req, res) => {
 
   if (req.query.platform === 'linux' || req.query.platform === 'win' || req.query.platform === 'osx') {
     const ip = req.headers['cf-connecting-ip']; // Cloudflare IP
-    uniqueUsers[ip] = req.query.platform;
+
+    uniqueUsers[ip] = {
+      platform: req.query.platform,
+      host_version: req.query.host_version
+    };
   }
 
   let json = Object.assign({}, (await basicProxy(req, res)).data);
-
-  console.log('desktop_core', json['discord_desktop_core']);
 
   json['discord_desktop_core'] = parseInt(`${moddedVersion}${json['discord_desktop_core'].toString()}`);
 

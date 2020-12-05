@@ -3,17 +3,16 @@
 <head>
   <title>GooseUpdate Dashboard</title>
   
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
   <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
-  <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
-  
-  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-  
+
   <style>
     body, html {
       margin: 0;
       padding: 0;
     }
-
+    
     * {
       box-sizing: border-box;
     }
@@ -21,101 +20,129 @@
     #main {
       padding: 4vw;
       padding-top: calc(4vw + 40px);
-
+      
       display: flex;
       gap: 5vw;
     }
-
-    @media screen and (max-width: 600px) {
-      #main {
-        flex-wrap: wrap;
-      }
-    }
-
+    
     .column {
       width: 50%;
       height: 100%;
-
+      
       flex: 1 1 50%;
       display: flex;
       flex-direction: column;
-
+      
       gap: 20px;
     }
     
     .demo-card {
       width: 100%;
-
+      
       padding: 18px;
     }
-
+    
     .demo-card__title {
       margin-top: 0;
     }
-
-    .requests {
+    
+    .dual {
       display: flex;
       flex-wrap: wrap;
-
+      
       gap: 20px;
       width: 100%;
     }
-
-    .requests > .demo-card {
-      width: calc(50% - 20px);
+    
+    .dual > .demo-card {
+      width: calc(50% - 10px);
     }
-
+    
     .pie {
       margin: 12px auto;
-  border-radius: 100%;
-  height: 200px;
-  overflow: hidden;
-  position: relative;
-  width: 200px;
-}
-.pie__segment {
-  --a: calc(var(--over50, 0) * -100%);
-  --b: calc((1 + var(--over50, 0)) * 100%);
-  --degrees: calc((var(--offset, 0) / 100) * 360);
-  -webkit-clip-path: polygon(var(--a) var(--a), var(--b) var(--a), var(--b) var(--b), var(--a) var(--b));
-  clip-path: polygon(var(--a) var(--a), var(--b) var(--a), var(--b) var(--b), var(--a) var(--b));
-  height: 100%;
-  position: absolute;
-  transform: translate(0, -50%) rotate(90deg) rotate(calc(var(--degrees) * 1deg));
-  transform-origin: 50% 100%;
-  width: 100%;
-  z-index: calc(1 + var(--over50));
-}
-.pie__segment:after,
-.pie__segment:before {
-  background: var(--bg, #e74c3c);
-  content: '';
-  height: 100%;
-  position: absolute;
-  width: 100%;
-}
-.pie__segment:before {
-  --degrees: calc((var(--value, 45) / 100) * 360);
-  transform: translate(0, 100%) rotate(calc(var(--degrees) * 1deg));
-  transform-origin: 50% 0%;
-}
-.pie__segment:after {
-  opacity: var(--over50, 0);
-}
+      border-radius: 100%;
+      height: 200px;
+      overflow: hidden;
+      position: relative;
+      width: 200px;
+    }
+    .pie__segment {
+      --a: calc(var(--over50, 0) * -100%);
+      --b: calc((1 + var(--over50, 0)) * 100%);
+      --degrees: calc((var(--offset, 0) / 100) * 360);
+      -webkit-clip-path: polygon(var(--a) var(--a), var(--b) var(--a), var(--b) var(--b), var(--a) var(--b));
+      clip-path: polygon(var(--a) var(--a), var(--b) var(--a), var(--b) var(--b), var(--a) var(--b));
+      height: 100%;
+      position: absolute;
+      transform: translate(0, -50%) rotate(90deg) rotate(calc(var(--degrees) * 1deg));
+      transform-origin: 50% 100%;
+      width: 100%;
+      z-index: calc(1 + var(--over50));
+    }
+    .pie__segment:after,
+    .pie__segment:before {
+      background: var(--bg, #e74c3c);
+      content: '';
+      height: 100%;
+      position: absolute;
+      width: 100%;
+    }
+    .pie__segment:before {
+      --degrees: calc((var(--value, 45) / 100) * 360);
+      transform: translate(0, 100%) rotate(calc(var(--degrees) * 1deg));
+      transform-origin: 50% 0%;
+    }
+    .pie__segment:after {
+      opacity: var(--over50, 0);
+    }
+    
+    .pie__label {
+      bottom: 0;
+      left: 0;
+      
+      position: absolute;
+      text-align: center;
+      
+      width: 50%;
+      z-index: 2;
+      
+      font-size: 14px;
+    }
+    
+    @media screen and (max-width: 800px) {
+      #main {
+        flex-wrap: wrap;
+      }
 
-.pie__label {
-  bottom: 0;
-  left: 0;
+      .column {
+        width: 100%;
+      }
+    }
 
-  position: absolute;
-  text-align: center;
+    @media screen and (max-width: 1100px) and (min-width: 800px) {
+      .dual-collapse .pie {
+        width: 150px;
+        height: 150px;
+      }
+    }
 
-  width: 50%;
-  z-index: 2;
+    @media screen and (max-width: 550px) {
+      .dual-collapse .pie {
+        width: 150px;
+        height: 150px;
+      }
+    }
 
-  font-size: 14px;
-}
+    @media screen and (max-width: 430px) {
+      .dual-collapse .demo-card {
+        width: 100%;
+      }
 
+      .dual-collapse .pie {
+        width: 200px;
+        height: 200px;
+      }
+    }
   </style>
 </head>
 
@@ -141,15 +168,95 @@
           <!-- <div class="demo-card__secondary mdc-typography mdc-typography--body2">The total amount of users who have requested updates this server session</div> -->
         </div>
       </div>
+      
+      <div class="dual dual-collapse">
+        <div class="mdc-card demo-card">
+          <div class="" tabindex="0">
+            <div class="demo-card__primary">
+              <h2 class="demo-card__title mdc-typography mdc-typography--headline6">OS</h2>
+              <div class="pie">
+                TEMPLATE_PIE_OS
+                <!-- <div class="pie__segment" style="--offset: 0; --value: 25; --bg: #db0a5b;">
+                  <label class="pie__label">Linux: 80%</label>
+                </div>
+                <div class="pie__segment" style="--offset: 25; --value: 10; --bg: #22a7f0;"></div>
+                <div class="pie__segment" style="--offset: 35; --value: 60; --bg: #2ecc71; --over50: 1;"></div>
+                <div class="pie__segment" style="--offset: 95; --value: 5; --bg: #4d05e8;"></div> -->
+              </div>
+            </div>
+            <!-- <div class="demo-card__secondary mdc-typography mdc-typography--body2">The demographic of OS usage</div> -->
+          </div>
+        </div>
+        
+        <div class="mdc-card demo-card">
+          <div class="" tabindex="0">
+            <div class="demo-card__primary">
+              <h2 class="demo-card__title mdc-typography mdc-typography--headline6">Host Version</h2>
+              <div class="pie">
+                TEMPLATE_PIE_HOST_VERSIONS
+                <!-- <div class="pie__segment" style="--offset: 0; --value: 25; --bg: #db0a5b;">
+                  <label class="pie__label">Linux: 80%</label>
+                </div>
+                <div class="pie__segment" style="--offset: 25; --value: 10; --bg: #22a7f0;"></div>
+                <div class="pie__segment" style="--offset: 35; --value: 60; --bg: #2ecc71; --over50: 1;"></div>
+                <div class="pie__segment" style="--offset: 95; --value: 5; --bg: #4d05e8;"></div> -->
+              </div>
+            </div>
+            <!-- <div class="demo-card__secondary mdc-typography mdc-typography--body2">The demographic of OS usage</div> -->
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="column">
+      <div class="dual">
+        <div class="mdc-card demo-card">
+          <div class="" tabindex="0">
+            <div class="demo-card__primary">
+              <h2 class="demo-card__title mdc-typography mdc-typography--headline6">Squirrel Host</h2>
+              <h3 class="demo-card__subtitle mdc-typography mdc-typography--headline4">TEMPLATE_COUNT_HOST_SQUIRREL</h3>
+            </div>
+            <!-- <div class="demo-card__secondary mdc-typography mdc-typography--body2">The total amount of users who have requested updates this server session</div> -->
+          </div>
+        </div>
+        
+        <div class="mdc-card demo-card">
+          <div class="" tabindex="0">
+            <div class="demo-card__primary">
+              <h2 class="demo-card__title mdc-typography mdc-typography--headline6">Non-Squirrel Host</h2>
+              <h3 class="demo-card__subtitle mdc-typography mdc-typography--headline4">TEMPLATE_COUNT_HOST_NOTSQUIRREL</h3>
+            </div>
+            <!-- <div class="demo-card__secondary mdc-typography mdc-typography--body2">The total amount of users who have requested updates this server session</div> -->
+          </div>
+        </div>
+        
+        <div class="mdc-card demo-card">
+          <div class="" tabindex="0">
+            <div class="demo-card__primary">
+              <h2 class="demo-card__title mdc-typography mdc-typography--headline6">Modules</h2>
+              <h3 class="demo-card__subtitle mdc-typography mdc-typography--headline4">TEMPLATE_COUNT_MODULES</h3>
+            </div>
+            <!-- <div class="demo-card__secondary mdc-typography mdc-typography--body2">The total amount of users who have requested updates this server session</div> -->
+          </div>
+        </div>
+        
+        <div class="mdc-card demo-card">
+          <div class="" tabindex="0">
+            <div class="demo-card__primary">
+              <h2 class="demo-card__title mdc-typography mdc-typography--headline6">Module Downloads</h2>
+              <h3 class="demo-card__subtitle mdc-typography mdc-typography--headline4">TEMPLATE_COUNT_MODULE_DOWNLOAD</h3>
+            </div>
+            <!-- <div class="demo-card__secondary mdc-typography mdc-typography--body2">The total amount of users who have requested updates this server session</div> -->
+          </div>
+        </div>
+      </div>
 
       <div class="mdc-card demo-card">
         <div class="" tabindex="0">
           <div class="demo-card__primary">
-            <h2 class="demo-card__title mdc-typography mdc-typography--headline6">OS Demographic</h2>
+            <h2 class="demo-card__title mdc-typography mdc-typography--headline6">Cache Rate</h2>
             <div class="pie">
-              TEMPLATE_PIE_SEGMENT_1
-              TEMPLATE_PIE_SEGMENT_2
-              TEMPLATE_PIE_SEGMENT_3
+              TEMPLATE_PIE_CACHE
               <!-- <div class="pie__segment" style="--offset: 0; --value: 25; --bg: #db0a5b;">
                 <label class="pie__label">Linux: 80%</label>
               </div>
@@ -162,54 +269,6 @@
         </div>
       </div>
     </div>
-    
-    <div class="column">
-      <div class="requests">
-        <div class="mdc-card demo-card">
-          <div class="" tabindex="0">
-            <div class="demo-card__primary">
-              <h2 class="demo-card__title mdc-typography mdc-typography--headline6">Squirrel Host</h2>
-              <h3 class="demo-card__subtitle mdc-typography mdc-typography--headline4">TEMPLATE_COUNT_HOST_SQUIRREL</h3>
-            </div>
-            <!-- <div class="demo-card__secondary mdc-typography mdc-typography--body2">The total amount of users who have requested updates this server session</div> -->
-          </div>
-        </div>
-
-        <div class="mdc-card demo-card">
-          <div class="" tabindex="0">
-            <div class="demo-card__primary">
-              <h2 class="demo-card__title mdc-typography mdc-typography--headline6">Non-Squirrel Host</h2>
-              <h3 class="demo-card__subtitle mdc-typography mdc-typography--headline4">TEMPLATE_COUNT_HOST_NOTSQUIRREL</h3>
-            </div>
-            <!-- <div class="demo-card__secondary mdc-typography mdc-typography--body2">The total amount of users who have requested updates this server session</div> -->
-          </div>
-        </div>
-
-        <div class="mdc-card demo-card">
-          <div class="" tabindex="0">
-            <div class="demo-card__primary">
-              <h2 class="demo-card__title mdc-typography mdc-typography--headline6">Modules</h2>
-              <h3 class="demo-card__subtitle mdc-typography mdc-typography--headline4">TEMPLATE_COUNT_MODULES</h3>
-            </div>
-            <!-- <div class="demo-card__secondary mdc-typography mdc-typography--body2">The total amount of users who have requested updates this server session</div> -->
-          </div>
-        </div>
-
-        <div class="mdc-card demo-card">
-          <div class="" tabindex="0">
-            <div class="demo-card__primary">
-              <h2 class="demo-card__title mdc-typography mdc-typography--headline6">Module Downloads</h2>
-              <h3 class="demo-card__subtitle mdc-typography mdc-typography--headline4">TEMPLATE_COUNT_MODULE_DOWNLOAD</h3>
-            </div>
-            <!-- <div class="demo-card__secondary mdc-typography mdc-typography--body2">The total amount of users who have requested updates this server session</div> -->
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
-  
-  <script type="text/javascript">
-    window.mdc.autoInit();
-  </script>
 </body>
 </html>
