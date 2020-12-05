@@ -112,7 +112,7 @@ const generatePie = (arr) => {
   const segments = unique.map((u, i) => {
     const count = arr.filter((x) => x === u).length;
 
-    const percent = Math.ceil(count / arr.length * 100);
+    const percent = Math.round(count / arr.length * 100);
 
     const ret = `<div class="pie__segment" style="--offset: ${offset}; --value: ${percent}; --over50: ${percent > 50 ? 1 : 0}; --bg: ${colors[i % colors.length]};">
     <label class="pie__label">${u[0].toUpperCase() + u.substring(1)}: ${percent}%</label>
