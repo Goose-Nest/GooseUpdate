@@ -189,8 +189,6 @@ app.get('/updates/:channel', async (req, res) => { // Non-Squirrel (Linux)
 
   const prox = await basicProxy(req, res);
 
-  res.status(prox.status);
-
   res.send(JSON.stringify(prox.data));
 });
 
