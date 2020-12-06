@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 
-const version = '2.1.0';
+const version = '2.1.1';
 
 const port = process.argv[2] || 80;
 if (!process.argv[2]) console.log(`No port specified in args, using default: ${port}\n`);
