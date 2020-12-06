@@ -409,7 +409,7 @@ const loadBranches = () => {
     branches[name] = {
       files,
       patch,
-      meta: JSON.parse(patch.match(/\/\*META((.|\n)*)\*\//)[1])
+      meta: JSON.parse(patch.match(/\/\*META((.|\n)*?)\*\//)[1])
     };
 
     console.log(d, name, files, branches[name].meta);
