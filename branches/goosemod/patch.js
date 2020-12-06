@@ -1,3 +1,9 @@
+/*META
+{
+  "version": 10
+}
+*/
+
 (async function() {
   const version = 10;
 

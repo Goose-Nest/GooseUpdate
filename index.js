@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 
-const version = '2.0.0-beta-1';
+const version = '2.0.0-beta';
 
 const port = process.argv[2] || 80;
 if (!process.argv[2]) console.log(`No port specified in args, using default: ${port}\n`);
@@ -228,7 +228,7 @@ app.get('/:branch/modules/:channel/versions.json', async (req, res) => {
 
   let json = Object.assign({}, (await basicProxy(req, res)).data);
 
-  json['discord_desktop_core'] = parseInt(`${branches[req.params.branch].version}${json['discord_desktop_core'].toString()}`);
+  json['discord_desktop_core'] = parseInt(`${branches[req.params.branch].meta.version}${json['discord_desktop_core'].toString()}`);
 
   res.send(JSON.stringify(json));
 });
@@ -266,7 +266,7 @@ app.get('/:branch/modules/:channel/:module/:version', async (req, res) => {
 
     const prox = await basicProxy(req, res, {
       responseType: 'arraybuffer'
-    }, [req.params.version, req.params.version.substring(branch.version.toString().length)]);
+    }, [req.params.version, req.params.version.substring(branch.meta.version.toString().length)]);
 
     console.time('fromNetwork');
 
@@ -406,7 +406,7 @@ const loadBranches = () => {
     branches[name] = {
       files,
       patch,
-      version: parseInt(patch.match(/const version = ([0-9]+)/)[1])
+      meta: JSON.parse(patch.match(/\/\*META((.|\n)*)\*\//)[1])
     };
   }
 

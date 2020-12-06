@@ -1,5 +1,9 @@
-(async function() {
-  const version = 1;
+/*META
+{
+  "version": 1
+}
+*/
 
+(async function() {
   require('./injector');
 })();
