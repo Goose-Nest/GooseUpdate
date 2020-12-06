@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 
-const version = '2.0.0';
+const version = '2.1.0';
 
 const port = process.argv[2] || 80;
 if (!process.argv[2]) console.log(`No port specified in args, using default: ${port}\n`);
@@ -453,6 +453,25 @@ const loadBranches = () => {
 };
 
 loadBranches();
+
+
+// temporary migration / fix for v1.x to v2.x users
+
+app.get('/updates/:channel/releases', async (req, res) => { // Squirrel (non-Linux)
+  res.redirect(`/goosemod${req.originalUrl}`);
+});
+
+app.get('/updates/:channel', async (req, res) => { // Non-Squirrel (Linux)
+  res.redirect(`/goosemod${req.originalUrl}`);
+});
+
+app.get('/modules/:channel/versions.json', async (req, res) => {
+  res.redirect(`/goosemod${req.originalUrl}`);
+});
+
+app.get('/modules/:channel/:module/:version', async (req, res) => {
+  res.redirect(`/goosemod${req.originalUrl}`);
+});
 
 app.listen(port, () => {
   console.log(`\n\nListening on port ${port}`)
