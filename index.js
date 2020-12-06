@@ -1,13 +1,17 @@
 const express = require('express');
 const app = express();
 
-const version = '1.3.0';
+const version = '2.0.0-beta-1';
 
 const port = process.argv[2] || 80;
 if (!process.argv[2]) console.log(`No port specified in args, using default: ${port}\n`);
 
 const axios = require('axios');
+
 const fs = require('fs');
+const path = require('path');
+
+const glob = require('glob');
 
 const stream = require('stream');
 const unzipper = require('unzipper');
@@ -15,11 +19,8 @@ const archiver = require('archiver');
 
 const discordBase = `https://discord.com/api`;
 
-const patchCode = fs.readFileSync(`${__dirname}/patch.js`, 'utf-8');
-const moddedVersion = parseInt(patchCode.match(/const version = ([0-9]+)/)[1]);
-
 console.log(`Using proxy base: ${discordBase}`);
-console.log(`Modded version: ${moddedVersion}`);
+// console.log(`Modded version: ${moddedVersion}`);
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -43,14 +44,28 @@ setInterval(cacheCleaner, 1000 * 60 * 60);
 };*/
 
 let proxyCacheHitArr = [];
+let proxyVsRedirect = [];
+
+const getProxyURL = (url) => `/${url.split('/').slice(2).join('/')}`;
+
+const basicRedirect = async (req, res) => {
+  proxyVsRedirect.push('redirect');
+
+  const proxyUrl = `${discordBase}${getProxyURL(req.originalUrl)}`;
+
+  console.log(proxyUrl);
+  res.redirect(proxyUrl);
+};
 
 const basicProxy = async (req, res, options = {}, rpl = undefined) => {
+  proxyVsRedirect.push('proxy');
+
   console.log(`${discordBase}${req.originalUrl}`);
 
   console.log(options, rpl);
 
-  const url = rpl !== undefined ? req.originalUrl.replace(rpl[0], rpl[1]) : req.originalUrl;
-
+  let url = rpl !== undefined ? req.originalUrl.replace(rpl[0], rpl[1]) : req.originalUrl;
+  url = getProxyURL(url);
   console.log(url);
 
   const cacheUrl = url.replace(/&_=[0-9]+$/, '');
@@ -59,7 +74,7 @@ const basicProxy = async (req, res, options = {}, rpl = undefined) => {
 
   const now = Date.now();
 
-  if (cached && (now - cached.cachedOn) / 1000 / 60 < 10) {
+  if (cached && (now - cached.cachedOn) / 1000 / 60 < 30) {
     console.log('cached');
 
     cached.lastUsed = now;
@@ -132,13 +147,17 @@ app.get('/', (req, res) => {
   const usersValues = Object.values(uniqueUsers);
   const usersPlatforms = usersValues.map((x) => x.platform);
   const usersHostVersions = usersValues.map((x) => x.host_version);
+  const usersHostChannels = usersValues.map((x) => x.channel);
 
   let temp = indexTemplate.slice();
   temp = temp.replace('TEMPLATE_TOTAL_USERS', `${usersValues.length}`);
 
   temp = temp.replace(`TEMPLATE_PIE_OS`, generatePie(usersPlatforms));
   temp = temp.replace(`TEMPLATE_PIE_HOST_VERSIONS`, generatePie(usersHostVersions));
+  temp = temp.replace(`TEMPLATE_PIE_HOST_CHANNELS`, generatePie(usersHostChannels));
+
   temp = temp.replace(`TEMPLATE_PIE_CACHE`, generatePie(proxyCacheHitArr));
+  temp = temp.replace(`TEMPLATE_PIE_VS`, generatePie(proxyVsRedirect));
 
   for (let k in requestCounts) {
     temp = temp.replace(`TEMPLATE_COUNT_${k.toUpperCase()}`, requestCounts[k]);
@@ -149,50 +168,50 @@ app.get('/', (req, res) => {
   //res.sendFile(`${__dirname}/index.html`);
 });
 
-app.get('/updates/:channel/releases', async (req, res) => { // Squirrel (non-Linux)
+app.get('/:branch/updates/:channel/releases', async (req, res) => { // Squirrel (non-Linux)
+  if (!branches[req.params.branch]) {
+    res.status(404);
+
+    res.send('Invalid GooseUpdate branch');
+  }
+
   requestCounts.host_squirrel++;
 
   console.log({type: 'host_squirrel', id: req.query.id, localVersion: req.query.localVersion, arch: req.query.arch});
 
-  let prox = (await basicProxy(req, res)).data;
+  /*let prox = (await basicProxy(req, res)).data;
 
   console.log(prox);
 
-  res.send(prox);
+  res.send(prox);*/
+
+  basicRedirect(req, res);
 
   //res.send(typeof prox === 'string' ? prox : JSON.stringify(json));
 });
 
-app.get('/updates/:channel', async (req, res) => { // Non-Squirrel (Linux)
+app.get('/:branch/updates/:channel', async (req, res) => { // Non-Squirrel (Linux)
+  if (!branches[req.params.branch]) {
+    res.status(404);
+
+    res.send('Invalid GooseUpdate branch');
+  }
+
   requestCounts.host_notsquirrel++;
 
   console.log({type: 'host_nonsquirrel', channel: req.params.channel, version: req.query.version, platform: req.query.platform});
-  console.log(`${discordBase}${req.originalUrl}`);
+  // console.log(`${discordBase}${req.originalUrl}`);
 
-  /*try { // If no response within X (500) ms there is no update (it does not close the response correctly)
-    let prox = await axios.get(`${discordBase}${req.originalUrl}`, {
-      timeout: 500
-    });
-
-    res.status(prox.status);
-
-    res.send(JSON.stringify(prox.data));
-  } catch (e) { // Send 204 with empty body (replicating)
-    res.status(204);
-
-    res.send();
-  }*/
-
-  /*let prox = await axios.get(`${discordBase}${req.originalUrl}`, {
-    // timeout: 500
-  });*/
-
-  const prox = await basicProxy(req, res);
-
-  res.send(JSON.stringify(prox.data));
+  basicRedirect(req, res);
 });
 
-app.get('/modules/:channel/versions.json', async (req, res) => {
+app.get('/:branch/modules/:channel/versions.json', async (req, res) => {
+  if (!branches[req.params.branch]) {
+    res.status(404);
+
+    res.send('Invalid GooseUpdate branch');
+  }
+
   requestCounts.modules++;
 
   console.log({type: 'check_for_module_updates', channel: req.params.channel});
@@ -202,18 +221,25 @@ app.get('/modules/:channel/versions.json', async (req, res) => {
 
     uniqueUsers[ip] = {
       platform: req.query.platform,
-      host_version: req.query.host_version
+      host_version: req.query.host_version,
+      channel: req.params.channel
     };
   }
 
   let json = Object.assign({}, (await basicProxy(req, res)).data);
 
-  json['discord_desktop_core'] = parseInt(`${moddedVersion}${json['discord_desktop_core'].toString()}`);
+  json['discord_desktop_core'] = parseInt(`${branches[req.params.branch].version}${json['discord_desktop_core'].toString()}`);
 
   res.send(JSON.stringify(json));
 });
 
-app.get('/modules/:channel/:module/:version', async (req, res) => {
+app.get('/:branch/modules/:channel/:module/:version', async (req, res) => {
+  if (!branches[req.params.branch]) {
+    res.status(404);
+
+    res.send('Invalid GooseUpdate branch');
+  }
+
   requestCounts.module_download++;
 
   console.log({type: 'download_module', channel: req.params.channel, module: req.params.module, version: req.params.version, hostVersion: req.query.host_version, platform: req.query.platform});
@@ -223,7 +249,7 @@ app.get('/modules/:channel/:module/:version', async (req, res) => {
 
     console.log('[CustomModule] Checking cache');
 
-    const cacheName = `${req.params.module}-${req.params.version}`;
+    const cacheName = `${req.params.module}-${req.params.branch}-${req.params.version}`;
     const cacheDir = `${__dirname}/cache/${cacheName}`;
     const cacheFinalFile = `${cacheDir}/module.zip`;
 
@@ -234,11 +260,13 @@ app.get('/modules/:channel/:module/:version', async (req, res) => {
       return;
     }
 
+    const branch = branches[req.params.branch];
+
     console.log('[CustomModule] Could not find cache dir, creating custom version');
 
     const prox = await basicProxy(req, res, {
       responseType: 'arraybuffer'
-    }, [req.params.version, req.params.version.substring(moddedVersion.toString().length)]);
+    }, [req.params.version, req.params.version.substring(branch.version.toString().length)]);
 
     console.time('fromNetwork');
 
@@ -263,9 +291,32 @@ app.get('/modules/:channel/:module/:version', async (req, res) => {
 
     let code = fs.readFileSync(`${cacheExtractDir}/index.js`, 'utf-8');
 
-    code = `${patchCode}\n\n${code}`;
+    code = `${branch.patch}\n\n${code}`;
 
     fs.writeFileSync(`${cacheExtractDir}/index.js`, code);
+
+    console.log('Copying other files');
+
+    function copyFolderSync(from, to) {
+      fs.mkdirSync(to);
+      fs.readdirSync(from).forEach(element => {
+        if (fs.lstatSync(path.join(from, element)).isFile()) {
+          fs.copyFileSync(path.join(from, element), path.join(to, element));
+        } else {
+          copyFolderSync(path.join(from, element), path.join(to, element));
+        }
+      });
+    }
+
+    for (let f of branch.files) {
+      console.log(f, f.split('/').pop());
+
+      if (fs.lstatSync(f).isDirectory()) {
+        copyFolderSync(f, `${cacheExtractDir}/${f.split('/').pop()}`)
+      } else {
+        fs.copyFileSync(f, `${cacheExtractDir}/${f.split('/').pop()}`);
+      }
+    }
 
     console.log('Creating new final zip');
 
@@ -298,13 +349,15 @@ app.get('/modules/:channel/:module/:version', async (req, res) => {
     return;
   }
 
-  const prox = await basicProxy(req, res, {
+  /*const prox = await basicProxy(req, res, {
     responseType: 'arraybuffer'
   });
 
   //console.log(prox);
 
-  res.send(prox.data);
+  res.send(prox.data);*/
+
+  basicRedirect(req, res);
 });
 
 const initCache = () => {
@@ -317,6 +370,50 @@ const initCache = () => {
 };
 
 initCache();
+
+let branches = {};
+
+const loadBranches = () => {
+  const dirs = glob.sync('branches/*');
+
+  for (let d of dirs) {
+    const name = d.split('/').pop();
+    //const filePaths = glob.sync(`${d}/**/*`).filter((x) => x.match(/.*\..*$/));
+    /*
+    console.log(name, filePaths);
+
+    let files = [];
+
+    for (let f of filePaths) {
+      files.push({
+        path: f,
+        content: fs.readFileSync(f)
+      });
+    }*/
+
+    let files = glob.sync(`${d}/*`);
+
+    let patch = '';
+    for (let f of files) {
+      const filename = f.split('/').pop();
+
+      if (filename === 'patch.js') {
+        patch = fs.readFileSync(f, 'utf8');
+        files.splice(files.indexOf(f), 1);
+      }
+    }
+
+    branches[name] = {
+      files,
+      patch,
+      version: parseInt(patch.match(/const version = ([0-9]+)/)[1])
+    };
+  }
+
+  console.log(branches);
+};
+
+loadBranches();
 
 app.listen(port, () => {
   console.log(`\n\nListening on port ${port}`)

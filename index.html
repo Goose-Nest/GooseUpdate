@@ -4,9 +4,9 @@
   <title>GooseUpdate Dashboard</title>
   
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-
+  
   <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
-
+  
   <style>
     body, html {
       margin: 0;
@@ -113,31 +113,31 @@
       #main {
         flex-wrap: wrap;
       }
-
+      
       .column {
         width: 100%;
       }
     }
-
+    
     @media screen and (max-width: 1100px) and (min-width: 800px) {
       .dual-collapse .pie {
         width: 150px;
         height: 150px;
       }
     }
-
+    
     @media screen and (max-width: 550px) {
       .dual-collapse .pie {
         width: 150px;
         height: 150px;
       }
     }
-
+    
     @media screen and (max-width: 430px) {
       .dual-collapse .demo-card {
         width: 100%;
       }
-
+      
       .dual-collapse .pie {
         width: 200px;
         height: 200px;
@@ -176,12 +176,6 @@
               <h2 class="demo-card__title mdc-typography mdc-typography--headline6">OS</h2>
               <div class="pie">
                 TEMPLATE_PIE_OS
-                <!-- <div class="pie__segment" style="--offset: 0; --value: 25; --bg: #db0a5b;">
-                  <label class="pie__label">Linux: 80%</label>
-                </div>
-                <div class="pie__segment" style="--offset: 25; --value: 10; --bg: #22a7f0;"></div>
-                <div class="pie__segment" style="--offset: 35; --value: 60; --bg: #2ecc71; --over50: 1;"></div>
-                <div class="pie__segment" style="--offset: 95; --value: 5; --bg: #4d05e8;"></div> -->
               </div>
             </div>
             <!-- <div class="demo-card__secondary mdc-typography mdc-typography--body2">The demographic of OS usage</div> -->
@@ -194,12 +188,18 @@
               <h2 class="demo-card__title mdc-typography mdc-typography--headline6">Host Version</h2>
               <div class="pie">
                 TEMPLATE_PIE_HOST_VERSIONS
-                <!-- <div class="pie__segment" style="--offset: 0; --value: 25; --bg: #db0a5b;">
-                  <label class="pie__label">Linux: 80%</label>
-                </div>
-                <div class="pie__segment" style="--offset: 25; --value: 10; --bg: #22a7f0;"></div>
-                <div class="pie__segment" style="--offset: 35; --value: 60; --bg: #2ecc71; --over50: 1;"></div>
-                <div class="pie__segment" style="--offset: 95; --value: 5; --bg: #4d05e8;"></div> -->
+              </div>
+            </div>
+            <!-- <div class="demo-card__secondary mdc-typography mdc-typography--body2">The demographic of OS usage</div> -->
+          </div>
+        </div>
+
+        <div class="mdc-card demo-card">
+          <div class="" tabindex="0">
+            <div class="demo-card__primary">
+              <h2 class="demo-card__title mdc-typography mdc-typography--headline6">Discord Channel</h2>
+              <div class="pie">
+                TEMPLATE_PIE_HOST_CHANNELS
               </div>
             </div>
             <!-- <div class="demo-card__secondary mdc-typography mdc-typography--body2">The demographic of OS usage</div> -->
@@ -250,22 +250,30 @@
           </div>
         </div>
       </div>
-
-      <div class="mdc-card demo-card">
-        <div class="" tabindex="0">
-          <div class="demo-card__primary">
-            <h2 class="demo-card__title mdc-typography mdc-typography--headline6">Cache Rate</h2>
-            <div class="pie">
-              TEMPLATE_PIE_CACHE
-              <!-- <div class="pie__segment" style="--offset: 0; --value: 25; --bg: #db0a5b;">
-                <label class="pie__label">Linux: 80%</label>
+      
+      <div class="dual dual-collapse">
+        <div class="mdc-card demo-card">
+          <div class="" tabindex="0">
+            <div class="demo-card__primary">
+              <h2 class="demo-card__title mdc-typography mdc-typography--headline6">Cache Rate</h2>
+              <div class="pie">
+                TEMPLATE_PIE_CACHE
               </div>
-              <div class="pie__segment" style="--offset: 25; --value: 10; --bg: #22a7f0;"></div>
-              <div class="pie__segment" style="--offset: 35; --value: 60; --bg: #2ecc71; --over50: 1;"></div>
-              <div class="pie__segment" style="--offset: 95; --value: 5; --bg: #4d05e8;"></div> -->
             </div>
+            <!-- <div class="demo-card__secondary mdc-typography mdc-typography--body2">The demographic of OS usage</div> -->
           </div>
-          <!-- <div class="demo-card__secondary mdc-typography mdc-typography--body2">The demographic of OS usage</div> -->
+        </div>
+
+        <div class="mdc-card demo-card">
+          <div class="" tabindex="0">
+            <div class="demo-card__primary">
+              <h2 class="demo-card__title mdc-typography mdc-typography--headline6">Redirect Rate</h2>
+              <div class="pie">
+                TEMPLATE_PIE_VS
+              </div>
+            </div>
+            <!-- <div class="demo-card__secondary mdc-typography mdc-typography--body2">The demographic of OS usage</div> -->
+          </div>
         </div>
       </div>
     </div>

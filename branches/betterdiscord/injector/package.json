@@ -1,0 +1,11 @@
+{
+    "name": "betterdiscord",
+    "version": "0.6.2",
+    "description": "BetterDiscord injector module",
+    "main": "index.js",
+    "private": true,
+    "dependencies": {},
+    "scripts": {
+        "deploy": "echo \"Injector has no build process.\" && exit 0"
+    }
+}
