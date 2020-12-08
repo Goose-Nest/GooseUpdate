@@ -455,7 +455,7 @@ const loadBranches = () => {
 loadBranches();
 
 
-// temporary migration / fix for v1.x to v2.x users
+// Temporary migration / fix for v1.x to v2.x users
 
 app.get('/updates/:channel/releases', async (req, res) => { // Squirrel (non-Linux)
   res.redirect(`/goosemod${req.originalUrl}`);
@@ -474,5 +474,5 @@ app.get('/modules/:channel/:module/:version', async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`\n\nListening on port ${port}`)
+  console.log(`\n\nListening on port ${port}`);
 });
