@@ -6,21 +6,57 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   
   <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
-  
+  <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+
   <style>
     body, html {
       margin: 0;
       padding: 0;
+
+      background-color: #f5f5f5;
     }
     
-    * {
+    *, *::before, *::after {
       box-sizing: border-box;
+
+      font-family: var(--mdc-typography-headline4-font-family, var(--mdc-typography-font-family, Roboto, sans-serif));
     }
     
     #main {
       padding: 4vw;
       padding-top: calc(4vw + 40px);
       
+      display: flex;
+      gap: 3vh;
+      
+      flex-direction: column;
+      align-items: center;
+    }
+
+    #main > h2 {
+      margin: 0;
+    }
+
+    .mdc-top-app-bar__section--align-end {
+      gap: 20px;
+    }
+
+    .app-fab--absolute {
+      position: fixed;
+      bottom: 1rem;
+      right: 1rem;
+
+      z-index: 10;
+    }
+
+    @media (min-width: 1024px) {
+      .app-fab--absolute {
+        bottom: 1.5rem;
+        right: 1.5rem;
+      }
+    }
+
+    .column-container {
       display: flex;
       gap: 5vw;
     }
@@ -110,7 +146,7 @@
     }
     
     @media screen and (max-width: 800px) {
-      #main {
+      .column-container {
         flex-wrap: wrap;
       }
       
@@ -143,6 +179,94 @@
         height: 200px;
       }
     }
+
+    #assist-modal {
+      display: none;
+
+      width: 100%;
+      height: 100%;
+
+      position: absolute;
+
+      top: 0;
+      left: 0;
+
+      z-index: 99;
+
+      background-color: rgba(0, 0, 0, .8);
+
+      overflow: none;
+
+      animation: back-change .5s;
+    }
+
+    @keyframes back-change {
+      from { background: none; }
+     to { background: rgba(0,0,0,.8); }
+    }
+
+    #assist-modal > .mdc-card {
+      position: absolute;
+
+      top: 50%;
+      left: 50%;
+
+      transform: translate(-50%, -50%);
+
+      padding: 24px;
+    }
+    
+    #assist-modal.show {
+      display: block;
+    }
+
+    #step-1-card, #step-2-card, #step-3-card {
+      opacity: 0;
+      margin-top: -99999px;
+
+      transition: opacity .5s;
+    }
+
+    #step-1-card.show, #step-2-card.show, #step-3-card.show {
+      margin-top: 0;
+      opacity: 1;
+    }
+
+    pre {
+      background-color: #eeeeee;
+
+      padding: 6px;
+    }
+
+    code {
+      background-color: #eeeeee;
+    }
+
+    .items {
+      display: flex;
+      flex-direction: column;
+
+      gap: 2px;
+    }
+
+    .items > .desc {
+      color: var(--mdc-theme-text-hint-on-background);
+      padding-left: 46px;
+
+      margin-bottom: 18px;
+    }
+
+    .items > button {
+      
+    }
+
+    .items > :nth-last-child(2) {
+      margin-bottom: 40px;
+    }
+
+    #fileSelect {
+      display: none;
+    }
   </style>
 </head>
 
@@ -150,133 +274,359 @@
   <header class="mdc-top-app-bar">
     <div class="mdc-top-app-bar__row">
       <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
-        <span class="mdc-top-app-bar__title">GooseUpdate Dashboard</span>
+        <span class="mdc-top-app-bar__title">GooseUpdate vTEMPLATE_VERSION</span>
       </section>
       <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end" role="toolbar">
+        <button id="assist-button" class="mdc-theme--secondary-bg mdc-button mdc-button--raised">
+          <span class="mdc-button__label">Assisted Install (BETA)</span>
+        </button>
+
+        <!-- <button id="guide-button" class="mdc-theme--secondary-bg mdc-button mdc-button--raised">
+          <span class="mdc-button__label">Install Guide</span>
+        </button> -->
       </section>
     </div>
   </header>
   
   <div id="main">
-    <div class="column">
-      <div class="mdc-card demo-card">
-        <div class="" tabindex="0">
-          <div class="demo-card__primary">
-            <h2 class="demo-card__title mdc-typography mdc-typography--headline6">Total Users</h2>
-            <h3 class="demo-card__subtitle mdc-typography mdc-typography--headline2">TEMPLATE_TOTAL_USERS</h3>
+    <h2 class="mdc-typography mdc-typography--headline4">Statistics</h2>
+    
+    <div class="column-container">
+      <div class="column">
+        <div class="mdc-card demo-card">
+          <div class="" tabindex="0">
+            <div class="demo-card__primary">
+              <h2 class="demo-card__title mdc-typography mdc-typography--headline6">Total Users</h2>
+              <h3 class="demo-card__subtitle mdc-typography mdc-typography--headline2">TEMPLATE_TOTAL_USERS</h3>
+            </div>
+            <!-- <div class="demo-card__secondary mdc-typography mdc-typography--body2">The total amount of users who have requested updates this server session</div> -->
           </div>
-          <!-- <div class="demo-card__secondary mdc-typography mdc-typography--body2">The total amount of users who have requested updates this server session</div> -->
+        </div>
+        
+        <div class="dual dual-collapse">
+          <div class="mdc-card demo-card">
+            <div class="" tabindex="0">
+              <div class="demo-card__primary">
+                <h2 class="demo-card__title mdc-typography mdc-typography--headline6">OS</h2>
+                <div class="pie">
+                  TEMPLATE_PIE_OS
+                </div>
+              </div>
+              <!-- <div class="demo-card__secondary mdc-typography mdc-typography--body2">The demographic of OS usage</div> -->
+            </div>
+          </div>
+          
+          <div class="mdc-card demo-card">
+            <div class="" tabindex="0">
+              <div class="demo-card__primary">
+                <h2 class="demo-card__title mdc-typography mdc-typography--headline6">Discord Channel</h2>
+                <div class="pie">
+                  TEMPLATE_PIE_HOST_CHANNELS
+                </div>
+              </div>
+              <!-- <div class="demo-card__secondary mdc-typography mdc-typography--body2">The demographic of OS usage</div> -->
+            </div>
+          </div>
+          
+          <div class="mdc-card demo-card">
+            <div class="" tabindex="0">
+              <div class="demo-card__primary">
+                <h2 class="demo-card__title mdc-typography mdc-typography--headline6">Host Version</h2>
+                <div class="pie">
+                  TEMPLATE_PIE_HOST_VERSIONS
+                </div>
+              </div>
+              <!-- <div class="demo-card__secondary mdc-typography mdc-typography--body2">The demographic of OS usage</div> -->
+            </div>
+          </div>
         </div>
       </div>
       
-      <div class="dual dual-collapse">
-        <div class="mdc-card demo-card">
-          <div class="" tabindex="0">
-            <div class="demo-card__primary">
-              <h2 class="demo-card__title mdc-typography mdc-typography--headline6">OS</h2>
-              <div class="pie">
-                TEMPLATE_PIE_OS
+      <div class="column">
+        <div class="dual">
+          <div class="mdc-card demo-card">
+            <div class="" tabindex="0">
+              <div class="demo-card__primary">
+                <h2 class="demo-card__title mdc-typography mdc-typography--headline6">Squirrel Host</h2>
+                <h3 class="demo-card__subtitle mdc-typography mdc-typography--headline4">TEMPLATE_COUNT_HOST_SQUIRREL</h3>
               </div>
+              <!-- <div class="demo-card__secondary mdc-typography mdc-typography--body2">The total amount of users who have requested updates this server session</div> -->
             </div>
-            <!-- <div class="demo-card__secondary mdc-typography mdc-typography--body2">The demographic of OS usage</div> -->
+          </div>
+          
+          <div class="mdc-card demo-card">
+            <div class="" tabindex="0">
+              <div class="demo-card__primary">
+                <h2 class="demo-card__title mdc-typography mdc-typography--headline6">Non-Squirrel Host</h2>
+                <h3 class="demo-card__subtitle mdc-typography mdc-typography--headline4">TEMPLATE_COUNT_HOST_NOTSQUIRREL</h3>
+              </div>
+              <!-- <div class="demo-card__secondary mdc-typography mdc-typography--body2">The total amount of users who have requested updates this server session</div> -->
+            </div>
+          </div>
+          
+          <div class="mdc-card demo-card">
+            <div class="" tabindex="0">
+              <div class="demo-card__primary">
+                <h2 class="demo-card__title mdc-typography mdc-typography--headline6">Modules</h2>
+                <h3 class="demo-card__subtitle mdc-typography mdc-typography--headline4">TEMPLATE_COUNT_MODULES</h3>
+              </div>
+              <!-- <div class="demo-card__secondary mdc-typography mdc-typography--body2">The total amount of users who have requested updates this server session</div> -->
+            </div>
+          </div>
+          
+          <div class="mdc-card demo-card">
+            <div class="" tabindex="0">
+              <div class="demo-card__primary">
+                <h2 class="demo-card__title mdc-typography mdc-typography--headline6">Module Downloads</h2>
+                <h3 class="demo-card__subtitle mdc-typography mdc-typography--headline4">TEMPLATE_COUNT_MODULE_DOWNLOAD</h3>
+              </div>
+              <!-- <div class="demo-card__secondary mdc-typography mdc-typography--body2">The total amount of users who have requested updates this server session</div> -->
+            </div>
           </div>
         </div>
-
-        <div class="mdc-card demo-card">
-          <div class="" tabindex="0">
-            <div class="demo-card__primary">
-              <h2 class="demo-card__title mdc-typography mdc-typography--headline6">Discord Channel</h2>
-              <div class="pie">
-                TEMPLATE_PIE_HOST_CHANNELS
+        
+        <div class="dual dual-collapse">
+          <div class="mdc-card demo-card">
+            <div class="" tabindex="0">
+              <div class="demo-card__primary">
+                <h2 class="demo-card__title mdc-typography mdc-typography--headline6">Cache Rate</h2>
+                <div class="pie">
+                  TEMPLATE_PIE_CACHE
+                </div>
               </div>
+              <!-- <div class="demo-card__secondary mdc-typography mdc-typography--body2">The demographic of OS usage</div> -->
             </div>
-            <!-- <div class="demo-card__secondary mdc-typography mdc-typography--body2">The demographic of OS usage</div> -->
           </div>
-        </div>
-
-        <div class="mdc-card demo-card">
-          <div class="" tabindex="0">
-            <div class="demo-card__primary">
-              <h2 class="demo-card__title mdc-typography mdc-typography--headline6">Host Version</h2>
-              <div class="pie">
-                TEMPLATE_PIE_HOST_VERSIONS
+          
+          <div class="mdc-card demo-card">
+            <div class="" tabindex="0">
+              <div class="demo-card__primary">
+                <h2 class="demo-card__title mdc-typography mdc-typography--headline6">Redirect Rate</h2>
+                <div class="pie">
+                  TEMPLATE_PIE_VS
+                </div>
               </div>
+              <!-- <div class="demo-card__secondary mdc-typography mdc-typography--body2">The demographic of OS usage</div> -->
             </div>
-            <!-- <div class="demo-card__secondary mdc-typography mdc-typography--body2">The demographic of OS usage</div> -->
           </div>
         </div>
       </div>
     </div>
-    
-    <div class="column">
-      <div class="dual">
-        <div class="mdc-card demo-card">
-          <div class="" tabindex="0">
-            <div class="demo-card__primary">
-              <h2 class="demo-card__title mdc-typography mdc-typography--headline6">Squirrel Host</h2>
-              <h3 class="demo-card__subtitle mdc-typography mdc-typography--headline4">TEMPLATE_COUNT_HOST_SQUIRREL</h3>
-            </div>
-            <!-- <div class="demo-card__secondary mdc-typography mdc-typography--body2">The total amount of users who have requested updates this server session</div> -->
+
+    <div id="assist-modal">
+      <div id="step-1-card" class="mdc-card mdc-elevation--z9">
+        <div class="" tabindex="0">
+          <div class="demo-card__primary">
+            <h2 class="demo-card__title mdc-typography mdc-typography--headline6">Select Mods To Use</h2>
           </div>
-        </div>
-        
-        <div class="mdc-card demo-card">
-          <div class="" tabindex="0">
-            <div class="demo-card__primary">
-              <h2 class="demo-card__title mdc-typography mdc-typography--headline6">Non-Squirrel Host</h2>
-              <h3 class="demo-card__subtitle mdc-typography mdc-typography--headline4">TEMPLATE_COUNT_HOST_NOTSQUIRREL</h3>
+
+          <div id="channels" class="items">
+            <div class="mdc-form-field">
+              <div class="mdc-checkbox">
+                <input checked type="checkbox"
+                       class="mdc-checkbox__native-control"
+                       id="checkbox-1"/>
+                <div class="mdc-checkbox__background">
+                  <svg class="mdc-checkbox__checkmark"
+                       viewBox="0 0 24 24">
+                    <path class="mdc-checkbox__checkmark-path"
+                          fill="none"
+                          d="M1.73,12.91 8.1,19.28 22.79,4.59"/>
+                  </svg>
+                  <div class="mdc-checkbox__mixedmark"></div>
+                </div>
+                <div class="mdc-checkbox__ripple"></div>
+              </div>
+              <label for="checkbox-1">GooseMod</label>
             </div>
-            <!-- <div class="demo-card__secondary mdc-typography mdc-typography--body2">The total amount of users who have requested updates this server session</div> -->
-          </div>
-        </div>
-        
-        <div class="mdc-card demo-card">
-          <div class="" tabindex="0">
-            <div class="demo-card__primary">
-              <h2 class="demo-card__title mdc-typography mdc-typography--headline6">Modules</h2>
-              <h3 class="demo-card__subtitle mdc-typography mdc-typography--headline4">TEMPLATE_COUNT_MODULES</h3>
+
+            <div class="mdc-typography mdc-typography--body2 desc">Include <a target=”_blank” href="https://goosemod.com">GooseMod</a> in updates</div>
+
+            <div class="mdc-form-field">
+              <div class="mdc-checkbox">
+                <input type="checkbox"
+                       class="mdc-checkbox__native-control"
+                       id="checkbox-2"/>
+                <div class="mdc-checkbox__background">
+                  <svg class="mdc-checkbox__checkmark"
+                       viewBox="0 0 24 24">
+                    <path class="mdc-checkbox__checkmark-path"
+                          fill="none"
+                          d="M1.73,12.91 8.1,19.28 22.79,4.59"/>
+                  </svg>
+                  <div class="mdc-checkbox__mixedmark"></div>
+                </div>
+                <div class="mdc-checkbox__ripple"></div>
+              </div>
+              <label for="checkbox-2">BetterDiscord</label>
             </div>
-            <!-- <div class="demo-card__secondary mdc-typography mdc-typography--body2">The total amount of users who have requested updates this server session</div> -->
-          </div>
-        </div>
-        
-        <div class="mdc-card demo-card">
-          <div class="" tabindex="0">
-            <div class="demo-card__primary">
-              <h2 class="demo-card__title mdc-typography mdc-typography--headline6">Module Downloads</h2>
-              <h3 class="demo-card__subtitle mdc-typography mdc-typography--headline4">TEMPLATE_COUNT_MODULE_DOWNLOAD</h3>
-            </div>
-            <!-- <div class="demo-card__secondary mdc-typography mdc-typography--body2">The total amount of users who have requested updates this server session</div> -->
+
+            <div class="mdc-typography mdc-typography--body2 desc">Include <a target=”_blank” href="https://betterdiscord.net">BetterDiscord</a> in updates</div>
+
+            <button id="step-1-button" class="mdc-button mdc-button--raised">
+              <span class="mdc-button__label">Continue</span>
+            </button>
           </div>
         </div>
       </div>
-      
-      <div class="dual dual-collapse">
-        <div class="mdc-card demo-card">
-          <div class="" tabindex="0">
-            <div class="demo-card__primary">
-              <h2 class="demo-card__title mdc-typography mdc-typography--headline6">Cache Rate</h2>
-              <div class="pie">
-                TEMPLATE_PIE_CACHE
-              </div>
+
+      <div id="step-2-card" class="mdc-card mdc-elevation--z9">
+        <div class="" tabindex="0">
+          <div class="demo-card__primary">
+            <h2 class="demo-card__title mdc-typography mdc-typography--headline6">Open your "settings.json"</h2>
+          </div>
+
+          <div class="items">
+            <div class="mdc-typography mdc-typography--body2">
+              Please locate your Discord user data folder containing your "settings.json" file. The Stable channel has no ending to the folder name, however Canary and others do.
             </div>
-            <!-- <div class="demo-card__secondary mdc-typography mdc-typography--body2">The demographic of OS usage</div> -->
+
+            <ul class="mdc-list mdc-list--two-line">
+              <li class="mdc-list-item" tabindex="0">
+                <span class="mdc-list-item__text">
+                  <span class="mdc-list-item__primary-text">Windows</span>
+                  <span class="mdc-list-item__secondary-text">%appdata%\discord[channel]\settings.json</span>
+                </span>
+              </li>
+              <li class="mdc-list-item">
+                <span class="mdc-list-item__text">
+                  <span class="mdc-list-item__primary-text">Linux</span>
+                  <span class="mdc-list-item__secondary-text">~/.config/discord[channel]/settings.json</span>
+                </span>
+              </li>
+              <li class="mdc-list-item">
+                <span class="mdc-list-item__text">
+                  <span class="mdc-list-item__primary-text">Mac</span>
+                  <span class="mdc-list-item__secondary-text">~/Library/Application Support/discord[channel]/settings.json</span>
+                </span>
+              </li>
+            </ul>
+
+            <div class="mdc-typography mdc-typography--body2">
+              Clicking the open file button below will ask you to choose a file. Please select the "settings.json" file in the location described above.
+            </div>
+
+            <button id="step-2-button" class="mdc-button mdc-button--raised">
+              <span class="mdc-button__label">Open File</span>
+            </button>
           </div>
         </div>
+      </div>
 
-        <div class="mdc-card demo-card">
-          <div class="" tabindex="0">
-            <div class="demo-card__primary">
-              <h2 class="demo-card__title mdc-typography mdc-typography--headline6">Redirect Rate</h2>
-              <div class="pie">
-                TEMPLATE_PIE_VS
-              </div>
+      <div id="step-3-card" class="mdc-card mdc-elevation--z9">
+        <div class="" tabindex="0">
+          <div class="demo-card__primary">
+            <h2 class="demo-card__title mdc-typography mdc-typography--headline6">Overwrite your "settings.json"</h2>
+          </div>
+
+          <div class="items">
+            <div class="mdc-typography mdc-typography--body2">
+              The contents of your "settings.json" has been automatically modified to add the custom GooseUpdate update endpoint. Now please overwrite (save over) the original "settings.json" file.
             </div>
-            <!-- <div class="demo-card__secondary mdc-typography mdc-typography--body2">The demographic of OS usage</div> -->
+
+            <button id="step-3-button" class="mdc-button mdc-button--raised">
+              <span class="mdc-button__label">Save File</span>
+            </button>
           </div>
         </div>
       </div>
     </div>
   </div>
+
+  <input type="file" id="fileSelect">
+
+  <script>
+    window.mdc.autoInit();
+
+    const step1Card = document.getElementById('step-1-card');
+    const step2Card = document.getElementById('step-2-card');
+    const step3Card = document.getElementById('step-3-card');
+
+    const assistButton = document.getElementById('assist-button');
+    const assistModal = document.getElementById('assist-modal');
+
+    assistButton.onclick = () => {
+      assistModal.classList.add('show');
+      step1Card.classList.add('show');
+    };
+
+    const step1Button = document.getElementById('step-1-button');
+    const step2Button = document.getElementById('step-2-button');
+    const step3Button = document.getElementById('step-3-button');
+    
+    step1Button.onclick = () => {
+      step1Card.classList.remove('show');
+      step2Card.classList.add('show');
+    };
+
+    const fileSelectEl = document.getElementById('fileSelect');
+
+    const getFileUpload = async () => {
+      fileSelectEl.value = null; // Prevent not firing change for repeated files
+      fileSelectEl.click();
+
+      await new Promise((res) => {
+        fileSelectEl.onchange = () => {
+          res();
+        };
+      });
+
+      fileSelectEl.onchange = undefined;
+
+      const file = fileSelectEl.files[0];
+          
+      if (file === undefined) {
+        return undefined;
+      }
+
+      return file;
+    };
+
+    const downloadToFile = (content, filename, contentType) => { // https://robkendal.co.uk/blog/2020-04-17-saving-text-to-client-side-file-using-vanilla-js
+      const a = document.createElement('a');
+      const file = new Blob([content], {type: contentType});
+  
+      a.href = URL.createObjectURL(file);
+      a.download = filename;
+      a.click();
+
+      URL.revokeObjectURL(a.href);
+    };
+
+    let finalResult = '';
+
+    step2Button.onclick = async () => {
+      const file = await getFileUpload();
+
+      const reader = new FileReader();
+
+      reader.readAsText(file, "UTF-8");
+
+      const result = await new Promise((res) => {
+        reader.onload = (e) => {
+          res(e.target.result);
+        };
+      });
+
+      let json = JSON.parse(result);
+
+      console.log(json);
+
+      const selected = [...document.getElementById('channels').children].filter((e) => e.classList.contains('mdc-form-field')).filter((x) => x.children[0].children[0].checked).map((x) => x.children[1].textContent.toLowerCase()).join('+');
+
+      json['UPDATE_ENDPOINT'] = `${location.origin}/${selected}`;
+
+      console.log(json);
+
+      finalResult = JSON.stringify(json, null, 2);
+
+      step2Card.classList.remove('show');
+      step3Card.classList.add('show');
+    };
+
+    step3Button.onclick = async () => {
+      downloadToFile(finalResult, 'settings.json', 'text/plain');
+    };
+    </script>
 </body>
 </html>

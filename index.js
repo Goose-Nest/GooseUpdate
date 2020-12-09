@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 
-const version = '2.1.1';
+const version = '2.2.0-dev';
 
 const port = process.argv[2] || 80;
 if (!process.argv[2]) console.log(`No port specified in args, using default: ${port}\n`);
@@ -149,8 +149,9 @@ app.get('/', (req, res) => {
   const usersHostVersions = usersValues.map((x) => x.host_version);
   const usersHostChannels = usersValues.map((x) => x.channel);
 
-  let temp = indexTemplate.slice();
+  let temp = fs.readFileSync('index.html', 'utf8'); //indexTemplate.slice();
   temp = temp.replace('TEMPLATE_TOTAL_USERS', `${usersValues.length}`);
+  temp = temp.replace('TEMPLATE_VERSION', version);
 
   temp = temp.replace(`TEMPLATE_PIE_OS`, generatePie(usersPlatforms));
   temp = temp.replace(`TEMPLATE_PIE_HOST_VERSIONS`, generatePie(usersHostVersions));
