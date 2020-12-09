@@ -149,7 +149,7 @@ app.get('/', (req, res) => {
   const usersHostVersions = usersValues.map((x) => x.host_version);
   const usersHostChannels = usersValues.map((x) => x.channel);
 
-  let temp = fs.readFileSync('index.html', 'utf8'); //indexTemplate.slice();
+  let temp = indexTemplate.slice(); // fs.readFileSync('index.html', 'utf8');
   temp = temp.replace('TEMPLATE_TOTAL_USERS', `${usersValues.length}`);
   temp = temp.replace('TEMPLATE_VERSION', version);
 
