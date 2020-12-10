@@ -220,14 +220,14 @@
       display: block;
     }
 
-    #step-1-card, #step-2-card, #step-3-card {
+    #step-1-card, #step-2-card, #step-3-card, #step-4-card {
       opacity: 0;
       margin-top: -99999px;
 
       transition: opacity .5s;
     }
 
-    #step-1-card.show, #step-2-card.show, #step-3-card.show {
+    #step-1-card.show, #step-2-card.show, #step-3-card.show, #step-4-card.show {
       margin-top: 0;
       opacity: 1;
     }
@@ -551,6 +551,20 @@
           </div>
         </div>
       </div>
+
+      <div id="step-4-card" class="mdc-card mdc-elevation--z9">
+        <div class="" tabindex="0">
+          <div class="demo-card__primary">
+            <h2 class="demo-card__title mdc-typography mdc-typography--headline6">Restart Discord</h2>
+          </div>
+
+          <div class="items">
+            <div class="mdc-typography mdc-typography--body2">
+              Your updated "settings.json" should now be saved. Please restart Discord for it to update. If it does not, you likely did not open or save the correct file; try using this installer again.
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -562,6 +576,7 @@
     const step1Card = document.getElementById('step-1-card');
     const step2Card = document.getElementById('step-2-card');
     const step3Card = document.getElementById('step-3-card');
+    const step4Card = document.getElementById('step-4-card');
 
     const assistButton = document.getElementById('assist-button');
     const assistModal = document.getElementById('assist-modal');
@@ -569,6 +584,13 @@
     assistButton.onclick = () => {
       assistModal.classList.add('show');
       step1Card.classList.add('show');
+    };
+
+    document.onclick = (e) => {
+      if (e.target.id === 'assist-modal') {
+        assistModal.classList.remove('show');
+        [step1Card, step2Card, step3Card, step4Card].forEach((x) => x.classList.remove('show'));
+      }
     };
 
     const step1Button = document.getElementById('step-1-button');
@@ -647,6 +669,9 @@
 
     step3Button.onclick = async () => {
       downloadToFile(finalResult, 'settings.json', 'text/plain');
+
+      step3Card.classList.remove('show');
+      step4Card.classList.add('show');
     };
     </script>
 </body>
