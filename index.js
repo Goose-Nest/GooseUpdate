@@ -432,7 +432,7 @@ const loadBranches = () => {
 		}
   }
   
-  combinations = combinations.filter((x) => x.length === branchNames.length);
+  combinations = combinations.filter((x) => x.length > 1);
 
   for (const original of combinations) {
     const reverse = original.slice().reverse();
