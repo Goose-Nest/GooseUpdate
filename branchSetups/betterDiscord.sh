@@ -1,5 +1,5 @@
 #!/bin/sh
-# This script clones (via Git) BetterDiscord's Injector into the correct directory for the branch automatically
+# This script clones (via Git) BetterDiscord's Injector into the correct directory for the branch automatically, then cleans it for use in an update
 
 injectorDir="../branches/betterdiscord/injector"
 
