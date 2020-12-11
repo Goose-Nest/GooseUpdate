@@ -286,6 +286,20 @@
     .badge.alpha {
       background-color: #6495ED;
     }
+
+    .divide {
+      height: 2px;
+      width: 100%;
+
+      background-color: var(--mdc-theme-text-hint-on-background);
+
+      margin-bottom: 14px;
+      margin-top: 4px;
+    }
+
+    .mdc-checkbox--disabled + label {
+      color: var(--mdc-theme-text-hint-on-background);
+    }
   </style>
 </head>
 
@@ -456,7 +470,7 @@
                 </div>
                 <div class="mdc-checkbox__ripple"></div>
               </div>
-              <label for="bd-checkbox">BetterDiscord <span class="badge beta">BETA</span></label>
+              <label for="bd-checkbox">BetterDiscord <span class="badge beta">beta support</span></label>
             </div>
 
             <div class="mdc-typography mdc-typography--body2 desc">Include <a target=”_blank” href="https://betterdiscord.net">BetterDiscord</a> in updates</div>
@@ -477,10 +491,12 @@
                 </div>
                 <div class="mdc-checkbox__ripple"></div>
               </div>
-              <label for="ed-checkbox">EnhancedDiscord <span class="badge alpha">ALPHA</span></label>
+              <label for="ed-checkbox">EnhancedDiscord <span class="badge alpha">alpha support</span></label>
             </div>
 
             <div class="mdc-typography mdc-typography--body2 desc">Include <a target=”_blank” href="https://enhanceddiscord.com">EnhancedDiscord</a> in updates</div>
+
+            <div class="divide"></div>
 
             <div class="mdc-form-field">
               <div class="mdc-checkbox">
@@ -599,6 +615,54 @@
 
     const assistButton = document.getElementById('assist-button');
     const assistModal = document.getElementById('assist-modal');
+
+    const gmCheckbox = document.getElementById('gm-checkbox');
+    const bdCheckbox = document.getElementById('bd-checkbox');
+    const edCheckbox = document.getElementById('ed-checkbox');
+
+    const disableMDCCheckbox = (checkbox) => {
+      checkbox.disabled = true;
+      checkbox.parentElement.classList.add('mdc-checkbox--disabled');
+    };
+
+    const enableMDCCheckbox = (checkbox) => {
+      checkbox.disabled = false;
+      checkbox.parentElement.classList.remove('mdc-checkbox--disabled');
+    };
+
+    const checkOneModSelected = () => {
+      const any = [gmCheckbox, bdCheckbox, edCheckbox].some((x) => x.checked);
+
+      if (!any) {
+        step1Button.setAttribute('disabled', true);
+      } else {
+        step1Button.removeAttribute('disabled');
+      }
+    };
+
+    gmCheckbox.oninput = () => {
+      checkOneModSelected();
+    };
+
+    bdCheckbox.oninput = () => {
+      if (bdCheckbox.checked) {
+        disableMDCCheckbox(edCheckbox);
+      } else {
+        enableMDCCheckbox(edCheckbox);
+      }
+
+      checkOneModSelected();
+    };
+
+    edCheckbox.oninput = () => {
+      if (edCheckbox.checked) {
+        disableMDCCheckbox(bdCheckbox);
+      } else {
+        enableMDCCheckbox(bdCheckbox);
+      }
+
+      checkOneModSelected();
+    };
 
     assistButton.onclick = () => {
       assistModal.classList.add('show');
