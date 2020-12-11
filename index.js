@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 
-const version = '2.3.0';
+const version = '2.4.0-dev';
 
 const port = process.argv[2] || 80;
 if (!process.argv[2]) console.log(`No port specified in args, using default: ${port}\n`);
@@ -174,6 +174,7 @@ app.get('/:branch/updates/:channel/releases', async (req, res) => { // Squirrel 
     res.status(404);
 
     res.send('Invalid GooseUpdate branch');
+    return;
   }
 
   requestCounts.host_squirrel++;
@@ -196,6 +197,7 @@ app.get('/:branch/updates/:channel', async (req, res) => { // Non-Squirrel (Linu
     res.status(404);
 
     res.send('Invalid GooseUpdate branch');
+    return;
   }
 
   requestCounts.host_notsquirrel++;
@@ -211,6 +213,7 @@ app.get('/:branch/modules/:channel/versions.json', async (req, res) => {
     res.status(404);
 
     res.send('Invalid GooseUpdate branch');
+    return;
   }
 
   requestCounts.modules++;
@@ -239,6 +242,7 @@ app.get('/:branch/modules/:channel/:module/:version', async (req, res) => {
     res.status(404);
 
     res.send('Invalid GooseUpdate branch');
+    return;
   }
 
   requestCounts.module_download++;
