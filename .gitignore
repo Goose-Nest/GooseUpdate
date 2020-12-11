@@ -3,3 +3,6 @@ node_modules
 cache
 
 *.log
+
+branches/betterdiscord/injector
+branches/enhanceddiscord/EnhancedDiscord
