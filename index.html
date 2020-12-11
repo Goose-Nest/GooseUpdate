@@ -267,6 +267,25 @@
     #fileSelect {
       display: none;
     }
+
+    .badge {
+      font-weight: bold;
+      font-size: 90%;
+
+      border-radius: 5px;
+      padding: 4px;
+      
+      color: white;
+      background-color: black;
+    }
+
+    .badge.beta {
+      background-color: #DE3163;
+    }
+
+    .badge.alpha {
+      background-color: #6495ED;
+    }
   </style>
 </head>
 
@@ -423,6 +442,48 @@
           <div id="channels" class="items">
             <div class="mdc-form-field">
               <div class="mdc-checkbox">
+                <input type="checkbox"
+                       class="mdc-checkbox__native-control"
+                       id="checkbox-2"/>
+                <div class="mdc-checkbox__background">
+                  <svg class="mdc-checkbox__checkmark"
+                       viewBox="0 0 24 24">
+                    <path class="mdc-checkbox__checkmark-path"
+                          fill="none"
+                          d="M1.73,12.91 8.1,19.28 22.79,4.59"/>
+                  </svg>
+                  <div class="mdc-checkbox__mixedmark"></div>
+                </div>
+                <div class="mdc-checkbox__ripple"></div>
+              </div>
+              <label for="checkbox-2">BetterDiscord <span class="badge beta">BETA</span></label>
+            </div>
+
+            <div class="mdc-typography mdc-typography--body2 desc">Include <a target=”_blank” href="https://betterdiscord.net">BetterDiscord</a> in updates</div>
+
+            <div class="mdc-form-field">
+              <div class="mdc-checkbox">
+                <input type="checkbox"
+                       class="mdc-checkbox__native-control"
+                       id="checkbox-3"/>
+                <div class="mdc-checkbox__background">
+                  <svg class="mdc-checkbox__checkmark"
+                       viewBox="0 0 24 24">
+                    <path class="mdc-checkbox__checkmark-path"
+                          fill="none"
+                          d="M1.73,12.91 8.1,19.28 22.79,4.59"/>
+                  </svg>
+                  <div class="mdc-checkbox__mixedmark"></div>
+                </div>
+                <div class="mdc-checkbox__ripple"></div>
+              </div>
+              <label for="checkbox-3">EnhancedDiscord <span class="badge alpha">ALPHA</span></label>
+            </div>
+
+            <div class="mdc-typography mdc-typography--body2 desc">Include <a target=”_blank” href="https://enhanceddiscord.com">EnhancedDiscord</a> in updates</div>
+
+            <div class="mdc-form-field">
+              <div class="mdc-checkbox">
                 <input checked type="checkbox"
                        class="mdc-checkbox__native-control"
                        id="checkbox-1"/>
@@ -441,48 +502,6 @@
             </div>
 
             <div class="mdc-typography mdc-typography--body2 desc">Include <a target=”_blank” href="https://goosemod.com">GooseMod</a> in updates</div>
-
-            <div class="mdc-form-field">
-              <div class="mdc-checkbox">
-                <input type="checkbox"
-                       class="mdc-checkbox__native-control"
-                       id="checkbox-2"/>
-                <div class="mdc-checkbox__background">
-                  <svg class="mdc-checkbox__checkmark"
-                       viewBox="0 0 24 24">
-                    <path class="mdc-checkbox__checkmark-path"
-                          fill="none"
-                          d="M1.73,12.91 8.1,19.28 22.79,4.59"/>
-                  </svg>
-                  <div class="mdc-checkbox__mixedmark"></div>
-                </div>
-                <div class="mdc-checkbox__ripple"></div>
-              </div>
-              <label for="checkbox-2">BetterDiscord</label>
-            </div>
-
-            <div class="mdc-typography mdc-typography--body2 desc">Include <a target=”_blank” href="https://betterdiscord.net">BetterDiscord</a> in updates</div>
-
-            <div class="mdc-form-field">
-              <div class="mdc-checkbox mdc-checkbox--disabled">
-                <input type="checkbox"
-                       class="mdc-checkbox__native-control"
-                       id="checkbox-3" disabled/>
-                <div class="mdc-checkbox__background">
-                  <svg class="mdc-checkbox__checkmark"
-                       viewBox="0 0 24 24">
-                    <path class="mdc-checkbox__checkmark-path"
-                          fill="none"
-                          d="M1.73,12.91 8.1,19.28 22.79,4.59"/>
-                  </svg>
-                  <div class="mdc-checkbox__mixedmark"></div>
-                </div>
-                <div class="mdc-checkbox__ripple"></div>
-              </div>
-              <label style="color: var(--mdc-theme-text-disabled-on-background)" for="checkbox-3">EnhancedDiscord <span style="font-size: 90%; vertical-align: super;">soon™</span></label>
-            </div>
-
-            <div class="mdc-typography mdc-typography--body2 desc">Include <a target=”_blank” href="https://enhanceddiscord.com">EnhancedDiscord</a> in updates</div>
 
             <button id="step-1-button" class="mdc-button mdc-button--raised">
               <span class="mdc-button__label">Continue</span>
