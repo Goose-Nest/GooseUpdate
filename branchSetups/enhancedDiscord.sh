@@ -11,7 +11,7 @@ rm -rf "$injectorDir"
 # Git clone (with no history for less data transfer / storage usage)
 echo "Cloning new injector..."
 
-git clone --depth=1 git@github.com:joe27g/EnhancedDiscord.git "$injectorDir"
+git clone --depth=1 https://github.com/joe27g/EnhancedDiscord.git "$injectorDir"
 
 # Remove extra unneeded files to save package size space
 echo "Removing extra unneeded files..."
