@@ -4,5 +4,5 @@ cache
 
 *.log
 
-branches/betterdiscord/injector
-branches/enhanceddiscord/EnhancedDiscord
+/branches/betterdiscord/injector
+/branches/enhanceddiscord/EnhancedDiscord
