@@ -8,6 +8,8 @@
   <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
   <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
 
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
   <style>
     body, html {
       margin: 0;
@@ -300,10 +302,39 @@
     .mdc-checkbox--disabled + label {
       color: var(--mdc-theme-text-hint-on-background);
     }
+
+    .mdc-typography {
+      color: var(--mdc-theme-text-primary-on-background);
+    }
+
+    body.dark {
+      background-color: rgb(13, 14, 14);
+
+      --mdc-theme-text-primary-on-background: rgba(255, 255, 255, 0.87);
+
+      --mdc-theme-text-secondary-on-background: rgba(255, 255, 255, 0.5);
+      --mdc-theme-text-hint-on-background: var(--mdc-theme-text-secondary-on-background);
+
+      --mdc-theme-surface: rgb(24, 26, 27);
+
+      --mdc-checkbox-unchecked-color: var(--mdc-theme-text-hint-on-background);
+    }
+
+    #themer-light {
+      display: none;
+    }
+
+    body.dark #themer-light {
+      display: inline;
+    }
+
+    body.dark #themer-dark {
+      display: none;
+    }
   </style>
 </head>
 
-<body>
+<body class="dark">
   <header class="mdc-top-app-bar">
     <div class="mdc-top-app-bar__row">
       <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
@@ -312,6 +343,16 @@
       <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end" role="toolbar">
         <button id="assist-button" class="mdc-theme--secondary-bg mdc-button mdc-button--raised">
           <span class="mdc-button__label">Assisted Install (BETA)</span>
+        </button>
+
+        <button id="themer" class="mdc-theme--secondary-bg mdc-button mdc-button--raised">
+          <span id="themer-light" class="material-icons">
+            brightness_high
+          </span>
+
+          <span id="themer-dark" class="material-icons">
+            brightness_low
+          </span>
         </button>
 
         <!-- <button id="guide-button" class="mdc-theme--secondary-bg mdc-button mdc-button--raised">
@@ -325,18 +366,18 @@
     <h2 class="mdc-typography mdc-typography--headline4">Statistics</h2>
     
     <div class="column-container">
-      <div class="column">
-        <div class="mdc-card demo-card">
-          <div class="" tabindex="0">
-            <div class="demo-card__primary">
-              <h2 class="demo-card__title mdc-typography mdc-typography--headline6">Total Users</h2>
-              <h3 class="demo-card__subtitle mdc-typography mdc-typography--headline2">TEMPLATE_TOTAL_USERS</h3>
-            </div>
-            <!-- <div class="demo-card__secondary mdc-typography mdc-typography--body2">The total amount of users who have requested updates this server session</div> -->
-          </div>
-        </div>
-        
+      <div class="column">        
         <div class="dual dual-collapse">
+          <div class="mdc-card demo-card">
+            <div class="" tabindex="0">
+              <div class="demo-card__primary">
+                <h2 class="demo-card__title mdc-typography mdc-typography--headline6">Total Users</h2>
+                <h3 class="demo-card__subtitle mdc-typography mdc-typography--headline2">TEMPLATE_TOTAL_USERS</h3>
+              </div>
+              <!-- <div class="demo-card__secondary mdc-typography mdc-typography--body2">The total amount of users who have requested updates this server session</div> -->
+            </div>
+          </div>
+
           <div class="mdc-card demo-card">
             <div class="" tabindex="0">
               <div class="demo-card__primary">
@@ -607,6 +648,16 @@
 
   <script>
     window.mdc.autoInit();
+
+    const themer = document.getElementById('themer');
+
+    themer.onclick = () => {
+      if (document.body.classList.contains('dark')) {
+        document.body.classList.remove('dark');
+      } else {
+        document.body.classList.add('dark');
+      }
+    };
 
     const step1Card = document.getElementById('step-1-card');
     const step2Card = document.getElementById('step-2-card');
