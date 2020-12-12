@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 
-const version = '2.5.0';
+const version = '2.6.0';
 
 const port = process.argv[2] || 80;
 if (!process.argv[2]) console.log(`No port specified in args, using default: ${port}\n`);
@@ -145,17 +145,15 @@ app.get('/', (req, res) => {
   res.set('Content-Type', 'text/html');
 
   const usersValues = Object.values(uniqueUsers);
-  const usersPlatforms = usersValues.map((x) => x.platform);
-  const usersHostVersions = usersValues.map((x) => x.host_version);
-  const usersHostChannels = usersValues.map((x) => x.channel);
 
   let temp = indexTemplate.slice(); // fs.readFileSync('index.html', 'utf8');
-  temp = temp.replace('TEMPLATE_TOTAL_USERS', `${usersValues.length}`);
+  temp = temp.replace('TEMPLATE_TOTAL_USERS', usersValues.length);
   temp = temp.replace('TEMPLATE_VERSION', version);
 
-  temp = temp.replace(`TEMPLATE_PIE_OS`, generatePie(usersPlatforms));
-  temp = temp.replace(`TEMPLATE_PIE_HOST_VERSIONS`, generatePie(usersHostVersions));
-  temp = temp.replace(`TEMPLATE_PIE_HOST_CHANNELS`, generatePie(usersHostChannels));
+  temp = temp.replace(`TEMPLATE_PIE_OS`, generatePie(usersValues.map((x) => x.platform)));
+  temp = temp.replace(`TEMPLATE_PIE_HOST_VERSIONS`, generatePie(usersValues.map((x) => x.host_version)));
+  temp = temp.replace(`TEMPLATE_PIE_HOST_CHANNELS`, generatePie(usersValues.map((x) => x.channel)));
+  temp = temp.replace(`TEMPLATE_PIE_BRANCHES`, generatePie(usersValues.map((x) => x.branch)));
 
   temp = temp.replace(`TEMPLATE_PIE_CACHE`, generatePie(proxyCacheHitArr));
   temp = temp.replace(`TEMPLATE_PIE_VS`, generatePie(proxyVsRedirect));
@@ -226,7 +224,8 @@ app.get('/:branch/modules/:channel/versions.json', async (req, res) => {
     uniqueUsers[ip] = {
       platform: req.query.platform,
       host_version: req.query.host_version,
-      channel: req.params.channel
+      channel: req.params.channel,
+      branch: req.params.branch
     };
   }
 
