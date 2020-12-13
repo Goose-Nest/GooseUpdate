@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 
-const version = '2.6.0';
+const version = '2.7.0';
 
 const port = process.argv[2] || 80;
 if (!process.argv[2]) console.log(`No port specified in args, using default: ${port}\n`);
@@ -129,16 +129,26 @@ const generatePie = (arr) => {
 
     const percent = Math.round(count / arr.length * 100);
 
-    const ret = `<div class="pie__segment" style="--offset: ${offset}; --value: ${percent}; --over50: ${percent > 50 ? 1 : 0}; --bg: ${colors[i % colors.length]};">
-    <label class="pie__label">${u[0].toUpperCase() + u.substring(1)}: ${percent}%</label>
-  </div>`;
+    const ret = [
+      `<div class="pie__segment" style="--offset: ${offset}; --value: ${percent}; --over50: ${percent > 50 ? 1 : 0}; --bg: ${colors[i % colors.length]};"></div>`,
+      `<div style="--bg: ${colors[i % colors.length]};">${u[0].toUpperCase() + u.substring(1)}: ${percent}%</div>`
+    ];
 
     offset += percent;
 
     return ret;
   });
 
-  return segments.join('\n');
+  const pieSegments = segments.map((x) => x[0]);
+  const legendSegments = segments.map((x) => x[1]);
+
+  return `
+    <div class="pie">
+      ${pieSegments.join('\n')}
+    </div>
+    <div class="pie-legend">
+      ${legendSegments.join('\n')}
+    </div>`;
 };
 
 app.get('/', (req, res) => {
@@ -146,7 +156,7 @@ app.get('/', (req, res) => {
 
   const usersValues = Object.values(uniqueUsers);
 
-  let temp = indexTemplate.slice(); // fs.readFileSync('index.html', 'utf8');
+  let temp = fs.readFileSync('index.html', 'utf8'); // indexTemplate.slice(); // 
   temp = temp.replace('TEMPLATE_TOTAL_USERS', usersValues.length);
   temp = temp.replace('TEMPLATE_VERSION', version);
 

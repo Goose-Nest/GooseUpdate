@@ -339,6 +339,38 @@
     body.dark #themer-dark {
       display: none;
     }
+
+    .pie-legend {
+      width: fit-content;
+      margin: auto;
+
+      padding: 8px;
+
+      display: flex;
+
+      gap: 6px;
+
+      background-color: rgb(38, 42, 43);
+      border-radius: var(--mdc-shape-medium, 4px);
+    }
+
+    .pie-legend > div {
+      color: var(--mdc-theme-text-primary-on-background);
+    }
+
+    .pie-legend > div::before {
+      content: ' ';
+      background-color: var(--bg);
+
+      width: 20px;
+      height: 20px;
+      display: inline-block;
+
+      vertical-align: bottom;
+      margin-right: 5px;
+
+      border-radius: 50%;
+    }
   </style>
 </head>
 
@@ -390,9 +422,7 @@
             <div class="" tabindex="0">
               <div class="demo-card__primary">
                 <h2 class="demo-card__title mdc-typography mdc-typography--headline6">OS</h2>
-                <div class="pie">
-                  TEMPLATE_PIE_OS
-                </div>
+                TEMPLATE_PIE_OS
               </div>
               <!-- <div class="demo-card__secondary mdc-typography mdc-typography--body2">The demographic of OS usage</div> -->
             </div>
@@ -402,9 +432,7 @@
             <div class="" tabindex="0">
               <div class="demo-card__primary">
                 <h2 class="demo-card__title mdc-typography mdc-typography--headline6">Discord Channel</h2>
-                <div class="pie">
-                  TEMPLATE_PIE_HOST_CHANNELS
-                </div>
+                TEMPLATE_PIE_HOST_CHANNELS
               </div>
               <!-- <div class="demo-card__secondary mdc-typography mdc-typography--body2">The demographic of OS usage</div> -->
             </div>
@@ -414,9 +442,7 @@
             <div class="" tabindex="0">
               <div class="demo-card__primary">
                 <h2 class="demo-card__title mdc-typography mdc-typography--headline6">Host Version</h2>
-                <div class="pie">
-                  TEMPLATE_PIE_HOST_VERSIONS
-                </div>
+                TEMPLATE_PIE_HOST_VERSIONS
               </div>
               <!-- <div class="demo-card__secondary mdc-typography mdc-typography--body2">The demographic of OS usage</div> -->
             </div>
@@ -429,9 +455,7 @@
           <div class="" tabindex="0">
             <div class="demo-card__primary">
               <h2 class="demo-card__title mdc-typography mdc-typography--headline6">Branches</h2>
-              <div class="pie">
-                TEMPLATE_PIE_BRANCHES
-              </div>
+              TEMPLATE_PIE_BRANCHES
             </div>
             <!-- <div class="demo-card__secondary mdc-typography mdc-typography--body2">The demographic of OS usage</div> -->
           </div>
@@ -442,9 +466,7 @@
             <div class="" tabindex="0">
               <div class="demo-card__primary">
                 <h2 class="demo-card__title mdc-typography mdc-typography--headline6">Cache Rate</h2>
-                <div class="pie">
-                  TEMPLATE_PIE_CACHE
-                </div>
+                TEMPLATE_PIE_CACHE
               </div>
               <!-- <div class="demo-card__secondary mdc-typography mdc-typography--body2">The demographic of OS usage</div> -->
             </div>
@@ -454,9 +476,7 @@
             <div class="" tabindex="0">
               <div class="demo-card__primary">
                 <h2 class="demo-card__title mdc-typography mdc-typography--headline6">Redirect Rate</h2>
-                <div class="pie">
-                  TEMPLATE_PIE_VS
-                </div>
+                TEMPLATE_PIE_VS
               </div>
               <!-- <div class="demo-card__secondary mdc-typography mdc-typography--body2">The demographic of OS usage</div> -->
             </div>
