@@ -1,7 +1,8 @@
 const express = require('express');
 const app = express();
 
-const version = '2.7.0';
+const startTime = Date.now();
+const version = '2.8.0';
 
 const port = process.argv[2] || 80;
 if (!process.argv[2]) console.log(`No port specified in args, using default: ${port}\n`);
@@ -151,12 +152,24 @@ const generatePie = (arr) => {
     </div>`;
 };
 
+const getDiffTime = (orig) => {
+  const diff = (Date.now() - orig);
+  
+  const minTotal = diff / 1000 / 60;
+
+  const hour = Math.floor(minTotal / 60);
+  const minOver = Math.floor(minTotal % 60);
+  const secOver = Math.floor(minTotal * 60 % 60);
+
+  return `${hour.toString().padStart(2, '0')}:${minOver.toString().padStart(2, '0')}:${secOver.toString().padStart(2, '0')}`
+};
+
 app.get('/', (req, res) => {
   res.set('Content-Type', 'text/html');
 
   const usersValues = Object.values(uniqueUsers);
 
-  let temp = fs.readFileSync('index.html', 'utf8'); // indexTemplate.slice(); // 
+  let temp = indexTemplate.slice(); // fs.readFileSync('index.html', 'utf8'); //  // 
   temp = temp.replace('TEMPLATE_TOTAL_USERS', usersValues.length);
   temp = temp.replace('TEMPLATE_VERSION', version);
 
@@ -167,6 +180,9 @@ app.get('/', (req, res) => {
 
   temp = temp.replace(`TEMPLATE_PIE_CACHE`, generatePie(proxyCacheHitArr));
   temp = temp.replace(`TEMPLATE_PIE_VS`, generatePie(proxyVsRedirect));
+
+  temp = temp.replace(`TEMPLATE_UPTIME`, getDiffTime(startTime));
+  temp = temp.replace(`TEMPLATE_LAST_UPDATE`, getDiffTime(Math.max(...usersValues.map((x => x.time)))));
 
   for (let k in requestCounts) {
     temp = temp.replace(`TEMPLATE_COUNT_${k.toUpperCase()}`, requestCounts[k]);
@@ -235,7 +251,8 @@ app.get('/:branch/modules/:channel/versions.json', async (req, res) => {
       platform: req.query.platform,
       host_version: req.query.host_version,
       channel: req.params.channel,
-      branch: req.params.branch
+      branch: req.params.branch,
+      time: Date.now()
     };
   }
 
