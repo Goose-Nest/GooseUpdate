@@ -2,7 +2,7 @@
   "name": "GooseUpdate",
   "version": "0.1.0",
   "description": "A HTTP server which replicates Discord's update API, proxying requests to the official endpoint and allows custom versions of modules.",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {},
   "author": "GooseMod",
   "license": "MIT",
@@ -12,5 +12,6 @@
     "express": "^4.17.1",
     "glob": "^7.1.6",
     "unzipper": "^0.10.11"
-  }
+  },
+  "type": "module"
 }
