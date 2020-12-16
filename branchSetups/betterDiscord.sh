@@ -22,7 +22,7 @@ rm -rf "$injectorDir/.git"
 # Remove extra unneeded files to save package size space
 echo "Removing extra unneeded files..."
 
-unneededFiles=("package.json" "README.md" ".gitignore" "LICENSE")
+unneededFiles=("README.md" ".gitignore" "LICENSE")
 
 for f in ${unneededFiles[@]}; do
   echo $f
