@@ -1,7 +1,5 @@
 import { readFileSync } from 'fs';
 
-import { sep } from 'path';
-
 import glob from 'glob';
 
 export let branches = {};
@@ -13,7 +11,7 @@ export const init =  () => {
   console.log('Loading branches...');
 
   for (let d of dirs) {
-    const name = d.split(sep).pop();
+    const name = d.split('/').pop();
   
     //const filePaths = glob.sync(`${d}/**/*`).filter((x) => x.match(/.*\..*$/));
     /*
@@ -32,7 +30,7 @@ export const init =  () => {
 
     let patch = '';
     for (let f of files) {
-      const filename = f.split(sep).pop();
+      const filename = f.split('/').pop();
 
       if (filename === 'patch.js') {
         patch = readFileSync(f, 'utf8');
@@ -43,7 +41,7 @@ export const init =  () => {
     branches[name] = {
       files,
       patch,
-      meta: JSON.parse(patch.match(/\/\*META((.|\n)*?)\*\//)[1])
+      meta: JSON.parse(patch.match(/\/\*META((.|\n|\r\n)*?)\*\//)[1])
     };
 
     console.log(d, name, files, branches[name].meta);
