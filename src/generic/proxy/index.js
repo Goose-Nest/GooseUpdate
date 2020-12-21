@@ -3,10 +3,10 @@ import * as Cache from './cache.js';
 
 import axios from 'axios';
 
-export default async (req, res, options = {}, rpl = undefined) => {
+export default async (req, res, options = {}, rpl = undefined, base = global.discordBase) => {
   proxyVsRedirect.push('proxy');
 
-  console.log(`${discordBase}${req.originalUrl}`);
+  console.log(`${base}${req.originalUrl}`);
 
   console.log(options, rpl);
 
@@ -34,7 +34,7 @@ export default async (req, res, options = {}, rpl = undefined) => {
 
   console.log('not cached');
 
-  let prox = await axios.get(`${discordBase}${url}`, options);
+  let prox = await axios.get(`${base}${url}`, options);
 
   res.status(prox.status);
 
