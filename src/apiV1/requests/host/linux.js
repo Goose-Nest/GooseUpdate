@@ -1,4 +1,4 @@
-import basicRedirect from '../../generic/redirect.js';
+import basicRedirect from '../../../generic/redirect.js';
 
 global.app.get('/:branch/updates/:channel', async (req, res) => { // Non-Squirrel (Linux)
   if (!branches[req.params.branch]) {

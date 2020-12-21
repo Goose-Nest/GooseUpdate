@@ -1,4 +1,4 @@
-import basicProxy from '../generic/proxy/index.js';
+import basicProxy from '../../generic/proxy/index.js';
 
 global.app.get('/:branch/modules/:channel/versions.json', async (req, res) => {
   if (!branches[req.params.branch]) {

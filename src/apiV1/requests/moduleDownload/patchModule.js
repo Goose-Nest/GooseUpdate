@@ -6,7 +6,7 @@ import path from 'path';
 import unzipper from 'unzipper';
 import archiver from 'archiver';
 
-import basicProxy from '../../generic/proxy/index.js';
+import basicProxy from '../../../generic/proxy/index.js';
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 

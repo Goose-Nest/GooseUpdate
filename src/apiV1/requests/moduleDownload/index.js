@@ -1,7 +1,7 @@
 import { existsSync } from 'fs';
 import path from 'path';
 
-import basicRedirect from '../../generic/redirect.js';
+import basicRedirect from '../../../generic/redirect.js';
 
 import patch from './patchModule.js';
 
