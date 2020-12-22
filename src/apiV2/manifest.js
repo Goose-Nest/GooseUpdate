@@ -20,7 +20,7 @@ global.app.get('/:branch/distributions/app/manifests/latest', async (req, res) =
 
   console.log(json.modules.discord_desktop_core);
 
-  delete json.modules.discord_desktop_core.deltas; // Remove deltas
+  json.modules.discord_desktop_core.deltas = []; // Remove deltas
 
   const oldVersion = json.modules.discord_desktop_core.full.module_version;
   const newVersion = parseInt(`${branches[req.params.branch].meta.version}${oldVersion.toString()}`);
