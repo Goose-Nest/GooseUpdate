@@ -110,8 +110,10 @@ ${desktopCoreBase}`;
 };
 
 export const getFinal = async (req) => {
-  const cached = cache.patched[`${req.params.branch}-${req.params.moduleName}-${req.params.moduleVersion}`];
+  const cached = cache.patched[getCacheName(req.params.moduleName, req.params.moduleVersion, req.params.branch)];
   
+  console.log(cache, cached);
+
   if (!cached) { // uhhh it should always be
     return;
   }
