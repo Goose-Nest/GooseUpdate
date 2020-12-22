@@ -14,7 +14,9 @@ global.app.get('/:branch/distributions/app/manifests/latest', async (req, res) =
     return;
   }
 
-  let json = Object.assign({}, (await basicProxy(req, res, {}, undefined, base)).data);
+  let json = JSON.parse(JSON.stringify((await basicProxy(req, res, {}, undefined, base)).data));
+
+  console.log(json);
 
   console.log(json.modules.discord_desktop_core);
 
