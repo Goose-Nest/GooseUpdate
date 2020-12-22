@@ -1,8 +1,8 @@
 import { Readable } from 'stream';
 import { createHash } from 'crypto';
-import { mkdirSync, writeFileSync, readFileSync } from 'fs';
 
-import { getProxyURL } from '../generic/lib.js';
+import { mkdirSync, writeFileSync, readFileSync, readdirSync, lstatSync, copyFileSync } from 'fs';
+import { join, resolve } from 'path';
 
 import * as tar from 'tar';
 import axios from 'axios';
@@ -83,6 +83,48 @@ const patch = async (m, branchName) => {
 `
   deltaManifest.files['index.js'].New.Sha256 = sha256(moddedIndex);
 
+  console.log('adding extra branch files');
+
+  let files = [];
+
+  function copyFolderSync(from, to) {
+    mkdirSync(to);
+    readdirSync(from).forEach(element => {
+      const outPath = resolve(join(to, element));
+      if (lstatSync(join(from, element)).isFile()) {
+        files.push(outPath);
+        copyFileSync(join(from, element), outPath);
+      } else {
+        copyFolderSync(join(from, element), outPath);
+      }
+    });
+  }
+  
+  for (let f of branch.files) {
+    if (lstatSync(f).isDirectory()) {
+      copyFolderSync(f, `${eDir}/files/${f.split('/').pop()}`)
+    } else {
+      // add this to files later once branches use top-level files
+      copyFileSync(f, `${eDir}/files/${f.split('/').pop()}`);
+    }
+  }
+
+  for (let f of files) {
+    const key = f.replace(new RegExp(`${eDir.replace('..', '.*')}/files/`), '');
+
+    deltaManifest.files[key] = {
+      New: {
+        Sha256: sha256(readFileSync(resolve(f)))
+      }
+    };
+
+    console.log(key, deltaManifest.files[key].New.Sha256);
+  }
+
+  console.log(deltaManifest);
+
+  console.log('writing patched files');
+
   writeFileSync(`${eDir}/delta_manifest.json`, JSON.stringify(deltaManifest));
 
   writeFileSync(`${eDir}/files/index.js`, moddedIndex);
@@ -98,6 +140,7 @@ const patch = async (m, branchName) => {
       'files/core.asar',
       'files/index.js',
       'files/package.json',
+      ...(files.map((x) => x.replace(new RegExp(`${eDir.replace('..', '.*')}/`), '')))
     ]
   );
 
