@@ -39,7 +39,7 @@ const getContentsFromEntry = async (entry) => {
 };
 
 const patch = async (m, branchName) => {
-  const cacheName = getCacheName('desktop_core', m.module_version, branchName);
+  const cacheName = getCacheName('discord_desktop_core', m.module_version, branchName);
   
   const cached = cache.patched[cacheName];
   if (cached) return cached.hash;

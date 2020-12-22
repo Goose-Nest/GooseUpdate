@@ -20,13 +20,16 @@ global.app.get('/:branch/distributions/app/manifests/latest', async (req, res) =
 
   delete json.modules.discord_desktop_core.deltas; // Remove deltas
 
+  const oldVersion = json.modules.discord_desktop_core.full.module_version;
+  const newVersion = parseInt(`${branches[req.params.branch].meta.version}${oldVersion.toString()}`);
+
   // Modify version to prefix branch's version
-  json.modules.discord_desktop_core.full.module_version = parseInt(`${branches[req.params.branch].meta.version}${json.modules.discord_desktop_core.full.module_version.toString()}`);
+  json.modules.discord_desktop_core.full.module_version = newVersion;
 
   json.modules.discord_desktop_core.full.package_sha256 = await getChecksum(json.modules.discord_desktop_core.full, req.params.branch);
 
   // Modify URL to use this host
-  json.modules.discord_desktop_core.full.url = `${host}/${req.params.branch}/${json.modules.discord_desktop_core.full.url.split('/').slice(3).join('/')}`;
+  json.modules.discord_desktop_core.full.url = `${host}/${req.params.branch}/${json.modules.discord_desktop_core.full.url.split('/').slice(3).join('/').replace(`${oldVersion}/full.distro`, `${newVersion}/full.distro`)}`;
 
   console.log(json.modules.discord_desktop_core);
 
