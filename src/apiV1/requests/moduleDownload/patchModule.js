@@ -66,7 +66,7 @@ export default async (req, res, cacheDir, cacheFinalFile) => {
     if (lstatSync(f).isDirectory()) {
       copyFolderSync(f, `${cacheExtractDir}/${f.split('/').pop()}`)
     } else {
-      fcopyFileSync(f, `${cacheExtractDir}/${f.split('/').pop()}`);
+      copyFileSync(f, `${cacheExtractDir}/${f.split('/').pop()}`);
     }
   }
   
