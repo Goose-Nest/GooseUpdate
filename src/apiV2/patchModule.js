@@ -94,8 +94,10 @@ const patch = async (m, branchName) => {
       cwd: eDir
     },
     [
-      'files',
-      'delta_manifest.json'
+      'delta_manifest.json',
+      'files/core.asar',
+      'files/index.js',
+      'files/package.json',
     ]
   );
 
