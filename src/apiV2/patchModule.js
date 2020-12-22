@@ -41,6 +41,8 @@ const getContentsFromEntry = async (entry) => {
 const patch = async (m, branchName) => {
   const cacheName = getCacheName('discord_desktop_core', m.module_version, branchName);
   
+  console.log('patch', cache, cacheName);
+
   const cached = cache.patched[cacheName];
   if (cached) return cached.hash;
   
@@ -112,7 +114,7 @@ ${desktopCoreBase}`;
 export const getFinal = async (req) => {
   const cached = cache.patched[getCacheName(req.params.moduleName, req.params.moduleVersion, req.params.branch)];
   
-  console.log(cache, cached);
+  console.log('getFinal', cache, getCacheName(req.params.moduleName, req.params.moduleVersion, req.params.branch));
 
   if (!cached) { // uhhh it should always be
     return;
