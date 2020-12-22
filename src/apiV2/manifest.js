@@ -26,7 +26,7 @@ global.app.get('/:branch/distributions/app/manifests/latest', async (req, res) =
   json.modules.discord_desktop_core.full.package_sha256 = await getChecksum(json.modules.discord_desktop_core.full, req.params.branch);
 
   // Modify URL to use this host
-  json.modules.discord_desktop_core.full.url = `${host}/${json.modules.discord_desktop_core.full.url.split('/').slice(3).join('/')}`;
+  json.modules.discord_desktop_core.full.url = `${host}/${req.params.branch}/${json.modules.discord_desktop_core.full.url.split('/').slice(3).join('/')}`;
 
   console.log(json.modules.discord_desktop_core);
 
