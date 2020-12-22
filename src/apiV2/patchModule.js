@@ -109,11 +109,11 @@ ${desktopCoreBase}`;
   console.log(tar2);//, tar2out);
 };
 
-export const send = async (req, res) => {
+export const getFinal = async (req) => {
   const cached = cache.patched[`${req.params.branch}-${req.params.moduleName}-${req.params.moduleVersion}`];
   
   if (!cached) { // uhhh it should always be
-    
+    return;
   }
 
   return cached.final;

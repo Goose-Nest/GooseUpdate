@@ -1,4 +1,4 @@
-import { send } from './patchModule.js';
+import { getFinal } from './patchModule.js';
 
 global.app.get('/:branch/distro/app/:channel/:platform/:arch/:hostVersion/:moduleName/:moduleVersion/full.distro', (req, res) => {
   if (!branches[req.params.branch]) {
@@ -8,5 +8,6 @@ global.app.get('/:branch/distro/app/:channel/:platform/:arch/:hostVersion/:modul
     return;
   }
 
-  send(req, res);  
+  const toSend = getFinal(req);
+  res.send(toSend);
 });
