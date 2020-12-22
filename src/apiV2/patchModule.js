@@ -111,7 +111,7 @@ ${desktopCoreBase}`;
   console.log(tar2);//, tar2out);
 };
 
-export const getFinal = async (req) => {
+export const getFinal = (req) => {
   const cached = cache.patched[getCacheName(req.params.moduleName, req.params.moduleVersion, req.params.branch)];
   
   console.log('getFinal', cache, getCacheName(req.params.moduleName, req.params.moduleVersion, req.params.branch));
