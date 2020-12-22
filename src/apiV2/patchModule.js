@@ -8,7 +8,6 @@ import * as tar from 'tar';
 import axios from 'axios';
 
 import { brotliDecompressSync, brotliCompressSync } from 'zlib';
-import { branches } from '../apiV1/branchesLoader.js';
 
 const cacheBase = '../cache';
 
@@ -26,15 +25,17 @@ const download = async (url) => (await axios.get(url, {
   responseType: 'arraybuffer'
 })).data;
 
-const getContentsFromEntry = async (entry) => {
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+const getBufferFromStream = async (stream) => {
   const chunks = [];
   
-  entry.read();
+  stream.read();
   
   return await new Promise((resolve, reject) => {
-    entry.on('data', chunk => chunks.push(chunk))
-    entry.on('error', reject)
-    entry.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')))
+    stream.on('data', chunk => chunks.push(chunk))
+    stream.on('error', reject)
+    stream.on('end', () => resolve(Buffer.concat(chunks)))
   });
 };
 
@@ -54,8 +55,55 @@ const patch = async (m, branchName) => {
   const brotli = brotliDecompressSync(data);
   
   const stream = Readable.from(brotli);
-  
-  let deltaManifest = await new Promise((resolve, reject) => {
+
+  const eDir = `${cacheBase}/${cacheName}/extract`;
+  mkdirSync(eDir, { recursive: true });
+
+  const xTar = stream.pipe(
+    tar.x({
+      cwd: eDir
+    })
+  );
+
+  console.log('extracting');
+
+  await new Promise((res) => {
+    xTar.on('finish', () => res());
+  });
+
+  // await sleep(3000);
+
+  console.log('extracted');
+
+  console.log('patching extracted files');
+
+  let deltaManifest = JSON.parse(readFileSync(`${eDir}/delta_manifest.json`));
+
+  const moddedIndex = `${branch.patch}\n\n${desktopCoreBase};
+`
+  deltaManifest.files['index.js'].New.Sha256 = sha256(moddedIndex);
+
+  writeFileSync(`${eDir}/delta_manifest.json`, JSON.stringify(deltaManifest));
+
+  writeFileSync(`${eDir}/files/index.js`, moddedIndex);
+
+  console.log('creating new tar');
+
+  const tarStream = tar.c(
+    {
+      cwd: eDir
+    },
+    [
+      'files',
+      'delta_manifest.json'
+    ]
+  );
+
+  const tarBuffer = await getBufferFromStream(tarStream);
+
+  const final = brotliCompressSync(tarBuffer);
+
+  /*let deltaManifest = await new Promise((resolve, reject) => {
     stream.pipe(
       tar.t({
         onentry: async (entry) => {
@@ -93,7 +141,7 @@ ${desktopCoreBase}`;
       `files/index.js`
     ]);
 
-  const final = brotliCompressSync(readFileSync(`${cacheBase}/${cacheName}/tar.tar`));
+  const final = brotliCompressSync(readFileSync(`${cacheBase}/${cacheName}/tar.tar`));*/
 
   console.log(final);
 
@@ -105,10 +153,6 @@ ${desktopCoreBase}`;
   };
 
   return sha256(finalHash);
-
-  // const tar2out = stream.pipe(tar2);
-
-  console.log(tar2);//, tar2out);
 };
 
 export const getFinal = (req) => {
