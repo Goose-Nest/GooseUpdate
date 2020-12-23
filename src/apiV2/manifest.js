@@ -1,5 +1,5 @@
 import basicProxy from '../generic/proxy/index.js';
-import { getChecksum } from './patchModule.js';
+import { patch, createModule } from './patchModule.js';
 
 const base = 'https://discord.com/api/updates';
 const host = `http://localhost:${process.argv[2] || 80}`;
@@ -16,9 +16,25 @@ global.app.get('/:branch/distributions/app/manifests/latest', async (req, res) =
 
   let json = JSON.parse(JSON.stringify((await basicProxy(req, res, {}, undefined, base)).data));
 
-  console.log(json);
+  const branchModules = req.params.branch.split('+').map((x) => `goose_${x}`);
 
-  console.log(json.modules.discord_desktop_core);
+  json.required_modules = json.required_modules.concat(branchModules);
+
+  const currentHostVersion = json.modules['discord_desktop_core'].full.host_version;
+
+  for (let m of branchModules) {
+    json.modules[m] = {
+      full: {
+        host_version: currentHostVersion,
+        module_version: branches[m.substring(6)].meta.version,
+        package_sha256: await createModule(m.substring(6), branches[m.substring(6)]),
+        url: `${host}/custom_module/${m}/full.distro`
+      },
+      deltas: []
+    };
+  }
+
+  console.log(json);
 
   json.modules.discord_desktop_core.deltas = []; // Remove deltas
 
@@ -28,7 +44,7 @@ global.app.get('/:branch/distributions/app/manifests/latest', async (req, res) =
   // Modify version to prefix branch's version
   json.modules.discord_desktop_core.full.module_version = newVersion;
 
-  json.modules.discord_desktop_core.full.package_sha256 = await getChecksum(json.modules.discord_desktop_core.full, req.params.branch);
+  json.modules.discord_desktop_core.full.package_sha256 = await patch(json.modules.discord_desktop_core.full, req.params.branch);
 
   // Modify URL to use this host
   json.modules.discord_desktop_core.full.url = `${host}/${req.params.branch}/${json.modules.discord_desktop_core.full.url.split('/').slice(3).join('/').replace(`${oldVersion}/full.distro`, `${newVersion}/full.distro`)}`;
