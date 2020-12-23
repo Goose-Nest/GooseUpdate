@@ -140,7 +140,7 @@ const patch = async (m, branchName) => {
       'files/core.asar',
       'files/index.js',
       'files/package.json',
-      ...(files.map((x) => x.replace(new RegExp(`${eDir.replace('..', '.*')}/`), '')))
+      ...(files.map((x) => x.replace(/\\/g, '/').replace(new RegExp(`${eDir.replace('..', '.*')}/`), '')))
     ]
   );
 
