@@ -110,7 +110,7 @@ const patch = async (m, branchName) => {
   }
 
   for (let f of files) {
-    const key = f.replace(/\\/g, '/').replace(new RegExp(`${eDir.replace('..', '.*')}/files/`), '');
+    const key = f.replace(/\\/g, '/').replace(new RegExp(`${eDir.replace('+', '\\+').replace('..', '.*')}/files/`), '');
 
     deltaManifest.files[key] = {
       New: {
@@ -140,7 +140,7 @@ const patch = async (m, branchName) => {
       'files/core.asar',
       'files/index.js',
       'files/package.json',
-      ...(files.map((x) => x.replace(/\\/g, '/').replace(new RegExp(`${eDir.replace('..', '.*')}/`), '')))
+      ...(files.map((x) => x.replace(/\\/g, '/').replace(new RegExp(`${eDir.replace('+', '\\+').replace('..', '.*')}/`), '')))
     ]
   );
 
