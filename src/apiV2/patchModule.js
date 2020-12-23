@@ -110,11 +110,11 @@ const patch = async (m, branchName) => {
   }
 
   for (let f of files) {
-    const key = f.replace(new RegExp(`${eDir.replace('..', '.*')}/files/`), '');
+    const key = f.replace(/\\/g, '/').replace(new RegExp(`${eDir.replace('..', '.*')}/files/`), '');
 
     deltaManifest.files[key] = {
       New: {
-        Sha256: sha256(readFileSync(resolve(f)))
+        Sha256: sha256(readFileSync(f))
       }
     };
 
