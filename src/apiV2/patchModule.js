@@ -80,8 +80,6 @@ export const createModule = async (branchName, branch) => {
     }
   }
 
-  writeFileSync(`${eDir}/delta_manifest.json`, JSON.stringify(deltaManifest));
-
   writeFileSync(`${eDir}/files/index.js`, branch.patch);
 
   files.push(resolve(`${eDir}/files/index.js`));
@@ -97,6 +95,8 @@ export const createModule = async (branchName, branch) => {
 
     console.log(key, deltaManifest.files[key].New.Sha256);
   }
+
+  writeFileSync(`${eDir}/delta_manifest.json`, JSON.stringify(deltaManifest));
 
   const tarStream = tar.c(
     {
