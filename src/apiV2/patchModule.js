@@ -164,7 +164,8 @@ export const patch = async (m, branchName) => {
 
   let deltaManifest = JSON.parse(readFileSync(`${eDir}/delta_manifest.json`));
 
-  const moddedIndex = `${branchName.split('+').map((x) => `require('../../goose_${x}-${branches[x].meta.version}/goose_${x}/index.js);`).join('\n')}
+  const moddedIndex = `${branchName.split('+').map((x) => `require('../../goose_${x}-${branches[x].meta.version}/goose_${x}/index.js');`).join('\n')}
+
 ${desktopCoreBase}`;
 //`${branch.patch}\n\n${desktopCoreBase};
 
