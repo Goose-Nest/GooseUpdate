@@ -4,7 +4,7 @@ import { createHash } from 'crypto';
 import { mkdirSync, writeFileSync, readFileSync, readdirSync, lstatSync, copyFileSync } from 'fs';
 import { join, resolve } from 'path';
 
-import * as tar from 'tar';
+import tar from 'tar';
 import axios from 'axios';
 
 import { brotliDecompressSync, brotliCompressSync } from 'zlib';
