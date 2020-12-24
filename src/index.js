@@ -9,6 +9,8 @@ global.version = '3.0.0';
 const port = process.argv[2] || 80;
 if (!process.argv[2]) console.log(`No port specified in args, using default: ${port}\n`);
 
+import('./testingProxy.js');
+
 global.app.all('*', (req, res, next) => {
   console.log('[req]', req.originalUrl);
 
@@ -21,8 +23,6 @@ await import('./apiV1/index.js');
 
 console.log('Loading API v2...');
 import('./apiV2/index.js');
-
-import('./testingProxy.js');
 
 //import { } from './apiV1/index.js';
 
