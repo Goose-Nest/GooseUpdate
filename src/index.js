@@ -22,7 +22,7 @@ await import('./apiV1/index.js');
 console.log('Loading API v2...');
 import('./apiV2/index.js');
 
-import('./betaProxy.js');
+import('./testingProxy.js');
 
 //import { } from './apiV1/index.js';
 
