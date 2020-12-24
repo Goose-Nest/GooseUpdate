@@ -2,7 +2,7 @@ import basicProxy from '../generic/proxy/index.js';
 import { patch, createModule } from './patchModule.js';
 
 const base = 'https://discord.com/api/updates';
-const host = `http://localhost:${process.argv[2] || 80}`;
+const host = process.argv[2] ? `http://localhost:${process.argv[2]}` : `https://updates.goosemod.com`;
 
 // https://discord.com/api/updates/distributions/app/manifests/latest?channel=canary&platform=win&arch=x86
 
