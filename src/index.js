@@ -18,14 +18,14 @@ global.app.all('*', (req, res, next) => {
 
 import('./webhook.js');
 
-console.log('Loading API v1...');
-await import('./apiV1/index.js');
+(async function() {
+  console.log('Loading API v1...');
+  await import('./apiV1/index.js');
 
-console.log('Loading API v2...');
-import('./apiV2/index.js');
+  console.log('Loading API v2...');
+  await import('./apiV2/index.js');
 
-//import { } from './apiV1/index.js';
-
-global.app.listen(port, () => {
-  console.log(`\n\nListening on port ${port}`);
-});
+  global.app.listen(port, () => {
+    console.log(`\n\nListening on port ${port}`);
+  });
+})();
