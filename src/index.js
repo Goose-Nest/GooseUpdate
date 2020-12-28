@@ -4,7 +4,7 @@ const app = express();
 global.app = app;
 
 global.startTime = Date.now();
-global.version = '3.0.0';
+global.version = '4.1.0';
 
 const port = process.argv[2] || 80;
 if (!process.argv[2]) console.log(`No port specified in args, using default: ${port}\n`);
