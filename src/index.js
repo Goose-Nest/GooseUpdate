@@ -9,8 +9,6 @@ global.version = '3.0.0';
 const port = process.argv[2] || 80;
 if (!process.argv[2]) console.log(`No port specified in args, using default: ${port}\n`);
 
-import('./testingProxy.js');
-
 global.app.all('*', (req, res, next) => {
   console.log('[req]', req.originalUrl);
 
