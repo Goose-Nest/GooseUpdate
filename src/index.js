@@ -16,6 +16,8 @@ global.app.all('*', (req, res, next) => {
   next();
 });
 
+import('./webhook.js');
+
 console.log('Loading API v1...');
 await import('./apiV1/index.js');
 
