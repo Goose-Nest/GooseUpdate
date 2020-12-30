@@ -340,6 +340,14 @@
       display: none;
     }
 
+    body.dark .mdc-radio .mdc-radio__native-control:enabled:not(:checked)+.mdc-radio__background .mdc-radio__outer-circle {
+      border-color: var(--mdc-theme-text-secondary-on-background);
+    }
+
+    body.dark .mdc-button--raised:disabled, .mdc-button--unelevated:disabled {
+      color: var(--mdc-theme-text-secondary-on-background);
+    }
+
     .pie-legend {
       width: fit-content;
       margin: auto;
@@ -556,7 +564,7 @@
           </div>
 
           <div id="channels" class="items">
-            <div class="mdc-form-field">
+            <!-- <div class="mdc-form-field">
               <div class="mdc-checkbox">
                 <input type="checkbox"
                        class="mdc-checkbox__native-control"
@@ -596,13 +604,53 @@
               <label for="ed-checkbox">EnhancedDiscord <span class="badge alpha">alpha support</span></label>
             </div>
 
+            <div class="mdc-typography mdc-typography--body2 desc">Include <a target=”_blank” href="https://enhanceddiscord.com">EnhancedDiscord</a> in updates</div> -->
+
+            <div class="mdc-form-field">
+              <div class="mdc-radio">
+                <input class="mdc-radio__native-control" type="radio" id="radio-bd" name="radios">
+                <div class="mdc-radio__background">
+                  <div class="mdc-radio__outer-circle"></div>
+                  <div class="mdc-radio__inner-circle"></div>
+                </div>
+                <div class="mdc-radio__ripple"></div>
+              </div>
+              <label for="radio-bd">BetterDiscord <span class="badge beta">beta support</span></label>
+            </div>
+
+            <div class="mdc-typography mdc-typography--body2 desc">Include <a target=”_blank” href="https://betterdiscord.net">BetterDiscord</a> in updates</div>
+
+            <div class="mdc-form-field">
+              <div class="mdc-radio">
+                <input class="mdc-radio__native-control" type="radio" id="radio-ed" name="radios">
+                <div class="mdc-radio__background">
+                  <div class="mdc-radio__outer-circle"></div>
+                  <div class="mdc-radio__inner-circle"></div>
+                </div>
+                <div class="mdc-radio__ripple"></div>
+              </div>
+              <label for="radio-ed">EnhancedDiscord <span class="badge beta">beta support</span></label>
+            </div>
+
             <div class="mdc-typography mdc-typography--body2 desc">Include <a target=”_blank” href="https://enhanceddiscord.com">EnhancedDiscord</a> in updates</div>
+
+            <div style="margin-bottom: 18px;" class="mdc-form-field">
+              <div class="mdc-radio">
+                <input class="mdc-radio__native-control" type="radio" id="radio-none" checked name="radios">
+                <div class="mdc-radio__background">
+                  <div class="mdc-radio__outer-circle"></div>
+                  <div class="mdc-radio__inner-circle"></div>
+                </div>
+                <div class="mdc-radio__ripple"></div>
+              </div>
+              <label for="radio-none">None</label>
+            </div>
 
             <div class="divide"></div>
 
             <div class="mdc-form-field">
               <div class="mdc-checkbox">
-                <input checked type="checkbox"
+                <input type="checkbox"
                        class="mdc-checkbox__native-control"
                        id="gm-checkbox"/>
                 <div class="mdc-checkbox__background">
@@ -621,7 +669,7 @@
 
             <div class="mdc-typography mdc-typography--body2 desc">Include <a target=”_blank” href="https://goosemod.com">GooseMod</a> in updates</div>
 
-            <button id="step-1-button" class="mdc-button mdc-button--raised">
+            <button disabled id="step-1-button" class="mdc-button mdc-button--raised">
               <span class="mdc-button__label">Continue</span>
             </button>
           </div>
@@ -729,21 +777,10 @@
     const assistModal = document.getElementById('assist-modal');
 
     const gmCheckbox = document.getElementById('gm-checkbox');
-    const bdCheckbox = document.getElementById('bd-checkbox');
-    const edCheckbox = document.getElementById('ed-checkbox');
-
-    const disableMDCCheckbox = (checkbox) => {
-      checkbox.disabled = true;
-      checkbox.parentElement.classList.add('mdc-checkbox--disabled');
-    };
-
-    const enableMDCCheckbox = (checkbox) => {
-      checkbox.disabled = false;
-      checkbox.parentElement.classList.remove('mdc-checkbox--disabled');
-    };
+    const noneRadio = document.getElementById('radio-none');
 
     const checkOneModSelected = () => {
-      const any = [gmCheckbox, bdCheckbox, edCheckbox].some((x) => x.checked);
+      const any = gmCheckbox.checked || !noneRadio.checked; //[gmCheckbox, bdCheckbox, edCheckbox].some((x) => x.checked);
 
       if (!any) {
         step1Button.setAttribute('disabled', true);
@@ -751,28 +788,8 @@
         step1Button.removeAttribute('disabled');
       }
     };
-
-    gmCheckbox.oninput = () => {
-      checkOneModSelected();
-    };
-
-    bdCheckbox.oninput = () => {
-      if (bdCheckbox.checked) {
-        disableMDCCheckbox(edCheckbox);
-      } else {
-        enableMDCCheckbox(edCheckbox);
-      }
-
-      checkOneModSelected();
-    };
-
-    edCheckbox.oninput = () => {
-      if (edCheckbox.checked) {
-        disableMDCCheckbox(bdCheckbox);
-      } else {
-        enableMDCCheckbox(bdCheckbox);
-      }
-
+    
+    document.body.onclick = () => {
       checkOneModSelected();
     };
 
@@ -850,7 +867,7 @@
 
       console.log(json);
 
-      const selected = [...document.getElementById('channels').children].filter((e) => e.classList.contains('mdc-form-field')).filter((x) => x.children[0].children[0].checked).map((x) => x.children[1].childNodes[0].textContent.trim().toLowerCase()).join('+');
+      const selected = [...document.getElementById('channels').children].filter((e) => e.classList.contains('mdc-form-field')).filter((x) => x.children[0].children[0].checked).map((x) => x.children[1].childNodes[0].textContent.trim().toLowerCase()).join('+').replace('none+', '');
 
       json['UPDATE_ENDPOINT'] = `${location.origin}/${selected}`;
 
