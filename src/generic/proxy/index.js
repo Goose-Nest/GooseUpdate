@@ -20,7 +20,7 @@ export default async (req, res, options = {}, rpl = undefined, base = global.dis
 
   const now = Date.now();
 
-  if (cached && (now - cached.cachedOn) / 1000 / 60 < 30) {
+  if (cached && (now - cached.cachedOn) / 1000 / 60 < (global.config.proxy?.cache?.maxMinutesToUseCached || 30)) {
     console.log('cached');
 
     cached.lastUsed = now;
@@ -34,7 +34,11 @@ export default async (req, res, options = {}, rpl = undefined, base = global.dis
 
   console.log('not cached');
 
-  let prox = await axios.get(`${base}${url}`, options);
+  let prox = await axios.get(`${base}${url}`, Object.assign({
+    headers: {
+      'User-Agent': global.config.proxy?.useragent || 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) discord/0.0.116 Chrome/83.0.4103.122 Electron/9.3.5 Safari/537.36'
+    }
+  }, options));
 
   res.status(prox.status);
 

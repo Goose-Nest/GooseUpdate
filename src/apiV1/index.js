@@ -1,6 +1,6 @@
 import { existsSync, rmdirSync, mkdirSync } from 'fs';
 
-global.discordBase = `https://discord.com/api`;
+global.discordBase = global.config.apiBases?.v1 || 'https://discord.com/api';
 
 console.log(`Using proxy base: ${discordBase}`);
 
@@ -33,4 +33,6 @@ import { } from './requests/index.js';
 import { } from './dashboard/index.js';
 
 // Temporary migration / fix for v1.x to v2.x users
-import { } from './v2Migration.js';
+if (global.config.deprecated?.guV2Migration) {
+  import('./v2Migration.js');
+}
