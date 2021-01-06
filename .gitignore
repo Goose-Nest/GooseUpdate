@@ -6,3 +6,6 @@ cache
 
 /branches/betterdiscord/injector
 /branches/enhanceddiscord/EnhancedDiscord
+
+*.crt
+*.key
