@@ -1,6 +1,6 @@
 /*META
 {
-  "version": 11
+  "version": 12
 }
 */
 
@@ -68,7 +68,7 @@
     bw.webContents.on('dom-ready', () => {
       log('dom-ready triggered: injecting GooseMod JS');
 
-      // bw.webContents.executeJavaScript(require('fs').readFileSync('/home/duck/GooseMod/Injector/dist/index.js', 'utf8'));
+      // bw.webContents.executeJavaScript(require('fs').readFileSync('/home/duck/GooseMod/GooseMod/dist/index.js', 'utf8'));
       bw.webContents.executeJavaScript(`(async function() { eval(await (await fetch('https://goosemod-api.netlify.app/untethered/untetheredInject.js')).text()); })();`);
     });
   }, 100);
