@@ -11,7 +11,7 @@ global.app.get('/:branch/updates/:channel', async (req, res) => { // Non-Squirre
   requestCounts.host_notsquirrel++;
     
   console.log({type: 'host_nonsquirrel', channel: req.params.channel, version: req.query.version, platform: req.query.platform});
-  // console.log(`${discordBase}${req.originalUrl}`);
+  // console.log(`${discordBase}${req.url}`);
     
   basicRedirect(req, res);
 });

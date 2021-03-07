@@ -1,30 +1,60 @@
-import express from 'express';
-import http from 'http';
-import { readFileSync } from 'fs';
+import fastify from 'fastify';
+
+// import express from 'express';
+// import http from 'http';
+// import spdy from 'spdy';
+
+import { readFileSync, createReadStream } from 'fs';
 
 import config from '../config.js';
 global.config = config;
 
 console.log(config);
 
-import spdy from 'spdy';
+const fastifyOptions = {};
 
-const app = express();
+if (config.webserver?.https) fastifyOptions.https = {
+  key: readFileSync(config.webserver.https.key),
+  cert: readFileSync(config.webserver.https.cert)
+};
+
+if (config.experimental?.webserver?.http2?.enabled) fastifyOptions.http2 = true;
+if (config.experimental?.webserver?.http2?.allowFallback) fastifyOptions.https.allowHTTP1 = true;
+
+const app = fastify(fastifyOptions);
+
+//const app = express();
 global.app = app;
 
 global.startTime = Date.now();
-global.version = '4.2.1';
+global.version = '5.0.0-dev';
 
 const port = process.argv[2] || 80;
 if (!process.argv[2]) console.log(`No port specified in args, using default: ${port}\n`);
 
-global.app.all('*', (req, res, next) => {
-  console.log('[req]', req.originalUrl);
+global.app.addHook('preHandler', (req, res, done) => {
+  console.log('[req]', req.url);
+  res.header('Server', `GooseUpdate v${version}`);
 
-  console.log(req.headers);
+  done();
+});
 
-  res.set('Server', `GooseUpdate v${version}`);
-  next();
+global.app.decorateReply('sendFile', function (filename) { // Adding Express feature
+  const stream = createReadStream(filename);
+
+  let contentType = '';
+
+  switch (filename.split('.').pop()) {
+    case 'zip':
+      contentType = 'application/zip';
+      break;
+
+    default:
+      contentType = 'text/plain';
+      break;
+  }
+
+  this.type(contentType).send(stream);
 });
 
 import('./webhook.js');
@@ -38,7 +68,9 @@ import('./webhook.js');
     await import('./apiV2/index.js');
   }
 
-  const options = !config.webserver?.https ? {} : {
+  app.listen(port);
+
+  /*const options = !config.webserver?.https ? {} : {
     key: readFileSync(config.webserver.https.key),
     cert: readFileSync(config.webserver.https.cert)
   };
@@ -46,5 +78,5 @@ import('./webhook.js');
   (config.experimental?.webserver?.http2 ? spdy : http).createServer(options, app)
     .listen(port, (err) => {
       console.log('done', err);
-    });
+    });*/
 })();

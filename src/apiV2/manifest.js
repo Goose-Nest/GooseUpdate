@@ -51,7 +51,7 @@ global.app.get('/:branch/distributions/app/manifests/latest', async (req, res) =
 
   console.log(json.modules.discord_desktop_core);
 
-  res.set('Content-Type', 'application/json');
+  res.header('Content-Type', 'application/json');
 
   res.send(JSON.stringify(json));
 });

@@ -47,7 +47,7 @@ const getDiffTime = (orig) => {
 };
 
 global.app.get('/', (req, res) => {
-  res.set('Content-Type', 'text/html');
+  res.header('Content-Type', 'text/html');
   
   const usersValues = Object.values(uniqueUsers);
   
@@ -70,7 +70,7 @@ global.app.get('/', (req, res) => {
     temp = temp.replace(`TEMPLATE_COUNT_${k.toUpperCase()}`, requestCounts[k]);
   }
   
-  res.send(temp);
+  res.type('text/html').send(temp);
   
   //res.sendFile(`${__dirname}/index.html`);
 });

@@ -6,11 +6,11 @@ import axios from 'axios';
 export default async (req, res, options = {}, rpl = undefined, base = global.discordBase) => {
   proxyVsRedirect.push('proxy');
 
-  console.log(`${base}${req.originalUrl}`);
+  console.log(`${base}${req.url}`);
 
   console.log(options, rpl);
 
-  let url = rpl !== undefined ? req.originalUrl.replace(rpl[0], rpl[1]) : req.originalUrl;
+  let url = rpl !== undefined ? req.url.replace(rpl[0], rpl[1]) : req.url;
   url = getProxyURL(url);
   console.log(url);
 
