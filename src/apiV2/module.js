@@ -8,6 +8,8 @@ global.app.get('/:branch/distro/app/:channel/:platform/:arch/:hostVersion/:modul
     return;
   }
 
+  requestCounts.v2_module++;
+
   const toSend = getFinal(req);
   res.send(toSend);
 });

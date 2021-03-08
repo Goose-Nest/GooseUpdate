@@ -14,6 +14,8 @@ global.app.get('/:branch/distributions/app/manifests/latest', async (req, res) =
     return;
   }
 
+  requestCounts.v2_manifest++;
+
   uniqueUsers[ip] = {
     platform: req.query.platform,
     host_version: 'unknown',
