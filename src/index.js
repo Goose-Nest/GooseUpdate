@@ -68,7 +68,7 @@ import('./webhook.js');
     await import('./apiV2/index.js');
   }
 
-  app.listen(port);
+  app.listen(port, '0.0.0.0');
 
   /*const options = !config.webserver?.https ? {} : {
     key: readFileSync(config.webserver.https.key),
