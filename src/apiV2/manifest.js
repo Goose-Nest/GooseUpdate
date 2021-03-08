@@ -14,6 +14,14 @@ global.app.get('/:branch/distributions/app/manifests/latest', async (req, res) =
     return;
   }
 
+  uniqueUsers[ip] = {
+    platform: req.query.platform,
+    host_version: 'unknown',
+    channel: req.query.channel,
+    branch: req.params.branch,
+    time: Date.now()
+  };
+
   let json = JSON.parse(JSON.stringify((await basicProxy(req, res, {}, undefined, base)).data));
 
   const branchModules = req.params.branch.split('+').map((x) => `goose_${x}`);
