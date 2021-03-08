@@ -921,8 +921,17 @@
           target.textContent = target.textContent.replace('[channel]', channel);
 
           return x;
-        }).filter((x) => !x.children[0].children[0].textContent.includes(navigator.platform.substring(0, 3)))
-          .forEach((x) => x.style.display = 'none');
+        }).filter((x) => {
+          if (!x.children[0].children[0].textContent.includes(navigator.platform.substring(0, 3))) {
+            return true;
+          }
+
+          if (x.children[0].children[0].textContent.includes('Flatpak') && channel !== '') {
+            return true;
+          }
+
+          return false;
+        }).forEach((x) => x.style.display = 'none');
 
         step2Card.classList.remove('show');
         step3Card.classList.add('show');
