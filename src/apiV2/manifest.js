@@ -16,6 +16,8 @@ global.app.get('/:branch/distributions/app/manifests/latest', async (req, res) =
 
   requestCounts.v2_manifest++;
 
+  const ip = req.headers['cf-connecting-ip']; // Cloudflare IP
+
   uniqueUsers[ip] = {
     platform: req.query.platform,
     host_version: 'unknown',
