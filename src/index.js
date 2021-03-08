@@ -11,7 +11,9 @@ global.config = config;
 
 console.log(config);
 
-const fastifyOptions = {};
+const fastifyOptions = {
+  caseSensitive: false
+};
 
 if (config.webserver?.https) fastifyOptions.https = {
   key: readFileSync(config.webserver.https.key),
