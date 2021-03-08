@@ -6,10 +6,10 @@ export default {
   */
 
   webserver: {
-    /* https: { // Key and cert to use for HTTPS (remove / set to false if not wanting HTTPS)
+    https: { // Key and cert to use for HTTPS (remove / set to false if not wanting HTTPS)
       key: '../server.key',
       cert: '../server.crt'
-    } */
+    }
   },
 
   proxy: {
@@ -32,10 +32,10 @@ export default {
 
   experimental: { // Experimental - could crash / break server (but mostly are fine)
     webserver: {
-      /* http2: {
+      http2: {
         enabled: true, // Whether to use HTTP/2
         allowFallback: true // Allow HTTP/1 fallback as well
-      } */
+      }
     },
     apiV2Enabled: true // Whether to actually enable / load API v2 code on startup
   }
