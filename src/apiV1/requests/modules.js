@@ -20,6 +20,7 @@ global.app.get('/:branch/modules/:channel/versions.json', async (req, res) => {
       host_version: req.query.host_version,
       channel: req.params.channel,
       branch: req.params.branch,
+      apiVersion: 'v1',
       time: Date.now()
     };
   }

@@ -23,6 +23,7 @@ global.app.get('/:branch/distributions/app/manifests/latest', async (req, res) =
     host_version: 'unknown',
     channel: req.query.channel,
     branch: req.params.branch,
+    apiVersion: 'v2',
     time: Date.now()
   };
 

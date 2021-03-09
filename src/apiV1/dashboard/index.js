@@ -59,6 +59,7 @@ global.app.get('/', (req, res) => {
   temp = temp.replace(`TEMPLATE_PIE_HOST_VERSIONS`, generatePie(usersValues.map((x) => x.host_version)));
   temp = temp.replace(`TEMPLATE_PIE_HOST_CHANNELS`, generatePie(usersValues.map((x) => x.channel)));
   temp = temp.replace(`TEMPLATE_PIE_BRANCHES`, generatePie(usersValues.map((x) => x.branch)));
+  temp = temp.replace(`TEMPLATE_PIE_API_VERSION`, generatePie(usersValues.map((x) => x.apiVersion)));
   
   temp = temp.replace(`TEMPLATE_PIE_CACHE`, generatePie(proxyCacheHitArr));
   temp = temp.replace(`TEMPLATE_PIE_VS`, generatePie(proxyVsRedirect));
