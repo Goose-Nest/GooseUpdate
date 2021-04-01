@@ -970,6 +970,7 @@
       const selected = [...document.getElementById('channels').children].filter((e) => e.classList.contains('mdc-form-field')).filter((x) => x.children[0].children[0].checked).map((x) => x.children[1].childNodes[0].textContent.trim().toLowerCase()).join('+').replace('none+', '');
 
       json['UPDATE_ENDPOINT'] = `${location.origin}/${selected}`;
+      json['NEW_UPDATE_ENDPOINT'] = `${location.origin}/${selected}/`;
 
       console.log(json);
 
