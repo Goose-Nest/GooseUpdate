@@ -1,11 +1,11 @@
 /*META
 {
-  "version": 12
+  "version": 13
 }
 */
 
 (async function() {
-  const version = 11;
+  const version = 13;
 
   const unstrictCSP = () => {
     log('Setting up CSP unstricter...');
@@ -13,7 +13,8 @@
     const cspAllowAll = [
       'connect-src',
       'style-src',
-      'img-src'
+      'img-src',
+      'font-src'
     ];
 
     electron.session.defaultSession.webRequest.onHeadersReceived(({ responseHeaders }, done) => {
