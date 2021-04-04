@@ -1,11 +1,11 @@
 /*META
 {
-  "version": 13
+  "version": 14
 }
 */
 
 (async function() {
-  const version = 13;
+  const version = 14;
 
   const unstrictCSP = () => {
     log('Setting up CSP unstricter...');
@@ -22,7 +22,7 @@
 
       if (csp) {
         for (let p of cspAllowAll) {
-          csp[0] = csp[0].replace(`${p}`, `${p} *`);
+          csp[0] = csp[0].replace(`${p}`, `${p} * data:`); // * does not include data: URIs
         }
 
         // Fix Discord's broken CSP which disallows unsafe-inline due to having a nonce (which they don't even use?)
