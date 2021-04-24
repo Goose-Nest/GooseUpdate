@@ -29,7 +29,7 @@ const app = fastify(fastifyOptions);
 global.app = app;
 
 global.startTime = Date.now();
-global.version = '5.3.0';
+global.version = '5.4.0-dev';
 
 const port = process.argv[2] || 80;
 if (!process.argv[2]) console.log(`No port specified in args, using default: ${port}\n`);
