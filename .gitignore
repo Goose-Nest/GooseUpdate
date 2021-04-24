@@ -5,7 +5,7 @@ cache
 *.log
 
 /branches/betterdiscord/injector
-/branches/enhanceddiscord/EnhancedDiscord
+/branches/smartcord/smartcord
 
 *.crt
 *.key
