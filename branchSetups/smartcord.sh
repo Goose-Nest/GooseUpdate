@@ -1,7 +1,7 @@
 #!/bin/sh
 # This script clones (via Git) EnhancedDiscord (their main repo) and cleans it for use in an update
 
-injectorDir="../branches/enhanceddiscord/EnhancedDiscord"
+injectorDir="../branches/smartcord/smartcord"
 
 # Remove current / old Injector
 echo "Removing old injector..."
@@ -11,7 +11,7 @@ rm -rf "$injectorDir"
 # Git clone (with no history for less data transfer / storage usage)
 echo "Cloning new injector..."
 
-git clone --depth=1 https://github.com/joe27g/EnhancedDiscord.git "$injectorDir"
+git clone --depth=1 https://github.com/smartfrigde/smartcord.git "$injectorDir"
 
 # Remove extra unneeded files to save package size space
 echo "Removing extra unneeded files..."
