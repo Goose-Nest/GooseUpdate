@@ -1,7 +1,9 @@
 #!/bin/sh
 # This script downloads BD's latest asar release
 
-asarPath="../branches/betterdiscord/betterdiscord.asar"
+cd "../branches/betterdiscord/"
+
+asarPath="betterdiscord.asar"
 
 # Remove current / old asar
 echo "Removing old asar..."
@@ -16,3 +18,13 @@ curl -s https://api.github.com/repos/rauenzi/BetterDiscordApp/releases/latest \
 | grep "browser_download_url.*betterdiscord.asar" \
 | cut -d '"' -f 4 \
 | wget -O "$asarPath" -qi -
+
+echo "Replacing process.platform specific checks..."
+
+asar extract "$asarPath" "ex"
+
+sed -i 's/"win32"==process.platform||"darwin"==process.platform/false/g' "ex/injector.js"
+
+asar pack "ex" "$asarPath"
+
+rm -rf "ex"
