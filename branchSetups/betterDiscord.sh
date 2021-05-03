@@ -1,30 +1,18 @@
 #!/bin/sh
-# This script clones (via Git) BetterDiscord's Injector into the correct directory for the branch automatically, then cleans it for use in an update
+# This script downloads BD's latest asar release
 
-injectorDir="../branches/betterdiscord/injector"
+asarPath="../branches/betterdiscord/betterdiscord.asar"
 
-# Remove current / old Injector
-echo "Removing old injector..."
+# Remove current / old asar
+echo "Removing old asar..."
 
-rm -rf "$injectorDir"
+rm -f "$asarPath"
 
-# Git clone (with no history for less data transfer / storage usage)
-echo "Cloning new injector..."
+# Download via latest GitHub release
+echo "Downloading new asar..."
 
-# We use the GooseMod fork as it fixes GooseUpdate-specific issues / bugs in the official / mainstream injector
-git clone --depth=1 --branch=injector https://github.com/GooseMod/BetterDiscordApp.git "$injectorDir"
-
-# Remove Git data in the directory
-echo "Removing Git data..."
-
-rm -rf "$injectorDir/.git"
-
-# Remove extra unneeded files to save package size space
-echo "Removing extra unneeded files..."
-
-unneededFiles=("README.md" ".gitignore" "LICENSE")
-
-for f in ${unneededFiles[@]}; do
-  echo $f
-  rm "$injectorDir/$f"
-done
+# Based on https://gist.github.com/steinwaywhw/a4cd19cda655b8249d908261a62687f8
+curl -s https://api.github.com/repos/rauenzi/BetterDiscordApp/releases/latest \
+| grep "browser_download_url.*betterdiscord.asar" \
+| cut -d '"' -f 4 \
+| wget -O "$asarPath" -qi -
