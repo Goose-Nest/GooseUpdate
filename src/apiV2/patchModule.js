@@ -75,8 +75,10 @@ export const createModule = async (branchName, branch) => {
     if (lstatSync(f).isDirectory()) {
       copyFolderSync(f, `${eDir}/files/${f.split('/').pop()}`)
     } else {
-      // add this to files later once branches use top-level files
-      copyFileSync(f, `${eDir}/files/${f.split('/').pop()}`);
+      const outPath = `${eDir}/files/${f.split('/').pop()}`;
+      
+      files.push(outPath);
+      copyFileSync(f, outPath);
     }
   }
 
