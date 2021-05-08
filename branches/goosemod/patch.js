@@ -1,11 +1,11 @@
 /*META
 {
-  "version": 16
+  "version": 17
 }
 */
 
 (async function() {
-  const version = 16;
+  const version = 17;
 
   const rgb = (r, g, b, text) => `\x1b[38;2;${r};${g};${b}m${text}\x1b[0m`;
 
@@ -68,7 +68,7 @@
 
   unstrictCSP();
 
-  let i = setInterval(() => {
+  let i = setImmediate(() => {
     log('Attempting to get main window');
 
     if (!global.mainWindowId) return;
@@ -85,7 +85,7 @@
       // bw.webContents.executeJavaScript(require('fs').readFileSync('/home/duck/GooseMod/GooseMod/dist/index.js', 'utf8'));
       bw.webContents.executeJavaScript(`(async function() { eval(await (await fetch('https://goosemod-api.netlify.app/untethered/untetheredInject.js')).text()); })();`);
     });
-  }, 100);
+  });
 
   // Auto migrate for users who were relying on GooseUpdate v1.x to new v2.x endpoint(s)
 
