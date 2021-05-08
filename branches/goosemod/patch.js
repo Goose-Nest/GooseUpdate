@@ -34,8 +34,6 @@
         csp[0] = csp[0].replace(/'nonce-.*?' /, '');
       }
 
-      console.log(url);
-
       if (corsAllowUrls.some((x) => url.startsWith(x))) {
         responseHeaders['access-control-allow-origin'] = ['*'];
       }
