@@ -1,11 +1,11 @@
 /*META
 {
-  "version": 14
+  "version": 15
 }
 */
 
 (async function() {
-  const version = 14;
+  const version = 15;
 
   const unstrictCSP = () => {
     log('Setting up CSP unstricter...');
@@ -17,7 +17,12 @@
       'font-src'
     ];
 
-    electron.session.defaultSession.webRequest.onHeadersReceived(({ responseHeaders }, done) => {
+    const corsAllowUrls = [
+      'https://github.com/GooseMod/GooseMod/releases/download/dev/index.js',
+      'https://github-releases.githubusercontent.com/'
+    ];
+
+    electron.session.defaultSession.webRequest.onHeadersReceived(({ responseHeaders, url }, done) => {
       let csp = responseHeaders['content-security-policy'];
 
       if (csp) {
@@ -27,6 +32,12 @@
 
         // Fix Discord's broken CSP which disallows unsafe-inline due to having a nonce (which they don't even use?)
         csp[0] = csp[0].replace(/'nonce-.*?' /, '');
+      }
+
+      console.log(url);
+
+      if (corsAllowUrls.some((x) => url.startsWith(x))) {
+        responseHeaders['access-control-allow-origin'] = ['*'];
       }
 
       done({ responseHeaders });
@@ -69,8 +80,8 @@
     bw.webContents.on('dom-ready', () => {
       log('dom-ready triggered: injecting GooseMod JS');
 
-      // bw.webContents.executeJavaScript(require('fs').readFileSync('/home/duck/GooseMod/GooseMod/dist/index.js', 'utf8'));
-      bw.webContents.executeJavaScript(`(async function() { eval(await (await fetch('https://goosemod-api.netlify.app/untethered/untetheredInject.js')).text()); })();`);
+      bw.webContents.executeJavaScript(require('fs').readFileSync('/home/duck/GooseMod/GooseMod/dist/index.js', 'utf8'));
+      // bw.webContents.executeJavaScript(`(async function() { eval(await (await fetch('https://goosemod-api.netlify.app/untethered/untetheredInject.js')).text()); })();`);
     });
   }, 100);
 
