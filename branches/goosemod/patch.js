@@ -1,11 +1,31 @@
 /*META
 {
-  "version": 15
+  "version": 16
 }
 */
 
 (async function() {
-  const version = 15;
+  const version = 16;
+
+  const rgb = (r, g, b, text) => `\x1b[38;2;${r};${g};${b}m${text}\x1b[0m`;
+
+  const log = function() { console.log(`[${rgb(250, 250, 0, 'GooseMod')}]`, ...arguments); }
+
+  const electron = require('electron');
+
+  const otherMods = {
+    /* specific: {
+      betterDiscord: electron.app.commandLine.hasSwitch("no-force-async-hooks-checks"), // BetterDiscord adds a command line switch in it's injector
+      // powercord: (new electron.BrowserWindow({webContents: {}})).webContents.__powercordPreload !== undefined, // PowerCord adds a property to BrowserWindow's webContent's
+    }, */
+    generic: {
+      electronProxy: require('util').types.isProxy(electron) // Many modern mods overwrite electron with a proxy with a custom BrowserWindow (copied from PowerCord)
+    }
+  };
+
+  log(`GooseUpdate Desktop Core Module Patch - Version ${version}`);
+
+  log(otherMods);
 
   const unstrictCSP = () => {
     log('Setting up CSP unstricter...');
@@ -32,6 +52,10 @@
 
         // Fix Discord's broken CSP which disallows unsafe-inline due to having a nonce (which they don't even use?)
         csp[0] = csp[0].replace(/'nonce-.*?' /, '');
+
+        if (otherMods.generic.electronProxy) { // Since patch v16, override other mod's onHeadersRecieved (Electron only allows 1 listener); because they rely on 0 CSP at all (GM just unrestricts some areas), remove it fully if we detect other mods
+          delete csp;
+        }
       }
 
       if (corsAllowUrls.some((x) => url.startsWith(x))) {
@@ -42,27 +66,7 @@
     });
   };
 
-  const rgb = (r, g, b, text) => `\x1b[38;2;${r};${g};${b}m${text}\x1b[0m`;
-
-  const log = function() { console.log(`[${rgb(250, 250, 0, 'GooseMod')}]`, ...arguments); }
-
-  const electron = require('electron');
-
-  const otherMods = {
-    specific: {
-      betterDiscord: electron.app.commandLine.hasSwitch("no-force-async-hooks-checks"), // BetterDiscord adds a command line switch in it's injector
-      // powercord: (new electron.BrowserWindow({webContents: {}})).webContents.__powercordPreload !== undefined, // PowerCord adds a property to BrowserWindow's webContent's
-    },
-    generic: {
-      electronProxy: require('util').types.isProxy(electron) // Many modern mods overwrite electron with a proxy with a custom BrowserWindow (copied from PowerCord)
-    }
-  };
-
-  log(`GooseUpdate Desktop Core Module Patch - Version ${version}`);
-
-  log(otherMods);
-
-  if (!otherMods.generic.electronProxy) unstrictCSP();
+  unstrictCSP();
 
   let i = setInterval(() => {
     log('Attempting to get main window');
