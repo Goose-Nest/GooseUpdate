@@ -1,11 +1,11 @@
 /*META
 {
-  "version": 17
+  "version": 18
 }
 */
 
 (async function() {
-  const version = 17;
+  const version = 18;
 
   const rgb = (r, g, b, text) => `\x1b[38;2;${r};${g};${b}m${text}\x1b[0m`;
 
@@ -14,10 +14,6 @@
   const electron = require('electron');
 
   const otherMods = {
-    /* specific: {
-      betterDiscord: electron.app.commandLine.hasSwitch("no-force-async-hooks-checks"), // BetterDiscord adds a command line switch in it's injector
-      // powercord: (new electron.BrowserWindow({webContents: {}})).webContents.__powercordPreload !== undefined, // PowerCord adds a property to BrowserWindow's webContent's
-    }, */
     generic: {
       electronProxy: require('util').types.isProxy(electron) // Many modern mods overwrite electron with a proxy with a custom BrowserWindow (copied from PowerCord)
     }
@@ -45,17 +41,18 @@
     electron.session.defaultSession.webRequest.onHeadersReceived(({ responseHeaders, url }, done) => {
       let csp = responseHeaders['content-security-policy'];
 
+      if (otherMods.generic.electronProxy) { // Since patch v16, override other mod's onHeadersRecieved (Electron only allows 1 listener); because they rely on 0 CSP at all (GM just unrestricts some areas), remove it fully if we detect other mods
+        delete responseHeaders['content-security-policy'];
+        csp = null;
+      }
+
       if (csp) {
         for (let p of cspAllowAll) {
-          csp[0] = csp[0].replace(`${p}`, `${p} * data:`); // * does not include data: URIs
+          csp[0] = csp[0].replace(`${p}`, `${p} * blob: data:`); // * does not include data: URIs
         }
 
         // Fix Discord's broken CSP which disallows unsafe-inline due to having a nonce (which they don't even use?)
         csp[0] = csp[0].replace(/'nonce-.*?' /, '');
-
-        if (otherMods.generic.electronProxy) { // Since patch v16, override other mod's onHeadersRecieved (Electron only allows 1 listener); because they rely on 0 CSP at all (GM just unrestricts some areas), remove it fully if we detect other mods
-          delete csp;
-        }
       }
 
       if (corsAllowUrls.some((x) => url.startsWith(x))) {
