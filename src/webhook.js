@@ -1,11 +1,12 @@
 import axios from 'axios';
+import config from '../config.js';
 
-const url = process.env.GU_WEBHOOK;
+const url = config.webhook ? config.webhook.url : undefined 
 
 const responseBase = {
   content: '',
-  username: 'GooseUpdate',
-  avatar_url: 'https://cdn.discordapp.com/avatars/760559484342501406/5125aff2f446ad7c45cf2dfd6abf92ed.png'
+  username: config.webhook ? config.webhook.username : undefined,
+  avatar_url: config.webhook ? config.webhook.avatar_url : undefined
 };
 
 const send = async (content, embeds = undefined) => {
