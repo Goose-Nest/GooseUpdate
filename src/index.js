@@ -20,8 +20,8 @@ if (config.webserver?.https) fastifyOptions.https = {
   cert: readFileSync(config.webserver.https.cert)
 };
 
-if (config.experimental?.webserver?.http2?.enabled) fastifyOptions.http2 = true;
-if (config.experimental?.webserver?.http2?.allowFallback) fastifyOptions.https.allowHTTP1 = true;
+if (config.experimental?.webserver?.http2?.enabled && config.webserver?.https) fastifyOptions.http2 = true;
+if (config.experimental?.webserver?.http2?.allowFallback && config.webserver?.https) fastifyOptions.https.allowHTTP1 = true;
 
 const app = fastify(fastifyOptions);
 

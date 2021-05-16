@@ -9,3 +9,5 @@ cache
 
 *.crt
 *.key
+
+config.js
