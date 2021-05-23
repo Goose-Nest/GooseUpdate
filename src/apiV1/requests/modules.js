@@ -29,7 +29,7 @@ global.app.get('/:branch/modules/:channel/versions.json', async (req, res) => {
 
   console.log(json);
 
-  if (json['discord_desktop_core']) json['discord_desktop_core'] = parseInt(`${branches[req.params.branch].meta.version}${json['discord_desktop_core'].toString()}`);
+  if (json['discord_desktop_core']) json['discord_desktop_core'] = parseInt(`${branches[req.params.branch].version}${json['discord_desktop_core'].toString()}`);
   
   res.send(JSON.stringify(json));
 });

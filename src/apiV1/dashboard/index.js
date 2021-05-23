@@ -1,9 +1,8 @@
 import { readFileSync } from 'fs';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
+import { join } from 'path';
 
 // Hell.
-const indexTemplate = readFileSync(join(dirname(fileURLToPath(import.meta.url)), 'template.html'), 'utf8');
+const indexTemplate = readFileSync(join(global.srcDir, 'apiV1', 'dashboard', 'template.html'), 'utf8');
 
 const generatePie = (arr) => {
   const colors = ['#D9434B', '#D9D659', '#2E9BD9', '#8C1D23', '#24678C'];

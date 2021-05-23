@@ -18,7 +18,7 @@ export default async (req, res, cacheDir, cacheFinalFile) => {
   
   const prox = await basicProxy(req, res, {
     responseType: 'arraybuffer'
-  }, [req.params.version, req.params.version.substring(branch.meta.version.toString().length)]);
+  }, [req.params.version, req.params.version.substring(branch.version.toString().length)]);
   
   console.time('fromNetwork');
   

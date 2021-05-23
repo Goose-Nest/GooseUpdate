@@ -1,14 +1,18 @@
 import { readFileSync } from 'fs';
+import { join } from 'path';
+import { createHash } from 'crypto';
 
 import glob from 'glob';
 
 export let branches = {};
 global.branches = branches;
 
-export const init =  () => {
-  const dirs = glob.sync('../branches/*');
+const sha256 = (data) => createHash('sha256').update(data).digest('hex');
 
-  console.log('Loading branches...');
+export const init =  () => {
+  const dirs = glob.sync(join(global.srcDir, '..', 'branches', '*'));
+
+  console.log('Loading branches...', dirs);
 
   for (let d of dirs) {
     const name = d.split('/').pop();
@@ -29,7 +33,7 @@ export const init =  () => {
     let files = glob.sync(`${d}/*`);
 
     let patch = '';
-    for (let f of files) {
+    for (const f of files) {
       const filename = f.split('/').pop();
 
       if (filename === 'patch.js') {
@@ -38,13 +42,27 @@ export const init =  () => {
       }
     }
 
+    let fileHashes = [];
+
+    for (const f of glob.sync(`${d}/**/*.*`)) {
+      const content = readFileSync(f);
+
+      const baseHash = sha256(content);
+
+      fileHashes.push(baseHash);
+    }
+
+    const version = parseInt(sha256(fileHashes.join(' ')).substring(0, 3), 16);
+
+    console.log(name, version);
+
     branches[name] = {
       files,
       patch,
-      meta: JSON.parse(patch.match(/\/\*META((.|\n|\r\n)*?)\*\//)[1])
+      version
     };
 
-    console.log(d, name, files, branches[name].meta);
+    // console.log(d, name, files, branches[name]);
   }
 
   console.log('\nCreating mixed branches...');
@@ -72,9 +90,7 @@ export const init =  () => {
       const res = {
         files: b.map((x) => x.files).reduce((x, a) => a.concat(x), []),
         patch: b.map((x) => x.patch).reduce((x, a) => `${x}\n${a}`, ''),
-        meta: {
-          version: parseInt(b.map((x) => x.meta.version).reduce((x, a) => `${x}0${a}`))
-        }
+        version: parseInt(b.map((x) => x.version).reduce((x, a) => `${x}0${a}`))
       };
 
       branches[key] = res;

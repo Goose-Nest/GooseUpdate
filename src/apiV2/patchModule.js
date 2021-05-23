@@ -42,7 +42,7 @@ const getBufferFromStream = async (stream) => {
 
 export const createModule = async (branchName, branch) => {
   const moduleName = `goose_${branchName}`;
-  const cacheName = getCacheName(moduleName, branch.meta.version, 'custom');
+  const cacheName = getCacheName(moduleName, branch.version, 'custom');
 
   const cached = cache.created[cacheName];
   if (cached) return cached.hash;
@@ -166,7 +166,7 @@ export const patch = async (m, branchName) => {
 
   let deltaManifest = JSON.parse(readFileSync(`${eDir}/delta_manifest.json`));
 
-  const moddedIndex = `${branchName.split('+').map((x) => `require('../../goose_${x}-${branches[x].meta.version}/goose_${x}/index.js');`).join('\n')}
+  const moddedIndex = `${branchName.split('+').map((x) => `require('../../goose_${x}-${branches[x].version}/goose_${x}/index.js');`).join('\n')}
 
 ${desktopCoreBase}`;
 //`${branch.patch}\n\n${desktopCoreBase};
@@ -291,7 +291,7 @@ ${desktopCoreBase}`;
 };
 
 export const getCustomFinal = (req) => {
-  const cached = cache.created[getCacheName(req.params.moduleName, branches[req.params.moduleName.substring(6)].meta.version, 'custom')];
+  const cached = cache.created[getCacheName(req.params.moduleName, branches[req.params.moduleName.substring(6)].version, 'custom')];
 
   if (!cached) {
     return;

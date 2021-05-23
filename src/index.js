@@ -6,6 +6,12 @@ import fastify from 'fastify';
 
 import { readFileSync, createReadStream } from 'fs';
 
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
+
+global.srcDir = dirname(fileURLToPath(import.meta.url));
+
+
 import config from '../config.js';
 global.config = config;
 
