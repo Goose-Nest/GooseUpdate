@@ -29,19 +29,11 @@ GooseUpdate also supports including multiple branches in updates by separating t
 # Adding a branch
 GooseUpdate branches patch `discord_desktop_core` with files stored in `branches/<branch name>/`.
 
-Branches must have a `patch.js` file to handle their injection in their branch folder.
-
-`patch.js` files have their version stored at the top of them in a META block, an example patch.js is below:
+Branches must have a `patch.js` file to handle their injection in their branch directory, which is prepended to Discord's base `index.js` of the module.
 
 ```javascript
-/*META
-{
-  "version": 1
-}*/
 // Any code you want to inject goes here
 require('mod.js')
 ```
 
-`patch.js` files MUST have their version increased when they're changed or the Discord client will not download updates to them.
-
-Other files can be included in your branch folder, but are not required.
+If other files are in the branch directory, they will be added the module directory.
