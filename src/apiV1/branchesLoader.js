@@ -54,15 +54,13 @@ export const init =  () => {
 
     const version = parseInt(sha256(fileHashes.join(' ')).substring(0, 3), 16);
 
-    console.log(name, version);
-
     branches[name] = {
       files,
       patch,
       version
     };
 
-    // console.log(d, name, files, branches[name]);
+    console.log(d, name, files, branches[name]);
   }
 
   console.log('\nCreating mixed branches...');
