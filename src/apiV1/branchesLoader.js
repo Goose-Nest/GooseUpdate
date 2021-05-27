@@ -52,7 +52,7 @@ export const init =  () => {
       fileHashes.push(baseHash);
     }
 
-    const version = parseInt(sha256(fileHashes.join(' ')).substring(0, 3), 16);
+    const version = parseInt(sha256(fileHashes.join(' ')).substring(0, 2), 16);
 
     branches[name] = {
       files,
