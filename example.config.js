@@ -29,6 +29,10 @@ export default {
     v2: "https://discord.com/api/updates", // API v2 base (for proxy)
   },
 
+  guApi: {
+    enabled: true
+  },
+
   /* Discord webhook for statistics updates (Uncomment and modify if you want a webhook)
   webhook: {
     url: "https://discord.com/api/webhooks/X", // Discord webhook URL

@@ -76,6 +76,11 @@ import('./webhook.js');
     await import('./apiV2/index.js');
   }
 
+  if (config.guApi?.enabled || true) {
+    console.log('Loading GU API...');
+    await import('./guAPI/index.js');
+  }
+
   app.listen(port, '0.0.0.0');
 
   /*const options = !config.webserver?.https ? {} : {
