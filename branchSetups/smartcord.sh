@@ -1,7 +1,7 @@
 #!/bin/sh
 # This script clones (via Git) EnhancedDiscord (their main repo) and cleans it for use in an update
 
-injectorDir="../branches/smartcord/smartcord"
+injectorDir="../branches/mod/smartcord/smartcord"
 
 # Remove current / old Injector
 echo "Removing old injector..."

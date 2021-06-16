@@ -10,12 +10,15 @@ global.branches = branches;
 const sha256 = (data) => createHash('sha256').update(data).digest('hex');
 
 export const init =  () => {
-  const dirs = glob.sync(join(global.srcDir, '..', 'branches', '*'));
+  const dirs = glob.sync(join(global.srcDir, '..', 'branches', '*', '*'));
 
   console.log('Loading branches...', dirs);
 
   for (let d of dirs) {
-    const name = d.split('/').pop();
+    const splits = d.split('/');
+
+    const name = splits.pop();
+    const type = splits.pop();
   
     //const filePaths = glob.sync(`${d}/**/*`).filter((x) => x.match(/.*\..*$/));
     /*
@@ -57,10 +60,11 @@ export const init =  () => {
     branches[name] = {
       files,
       patch,
-      version
+      version,
+      type
     };
 
-    console.log(d, name, files, branches[name]);
+    console.log(d, branches[name]);
   }
 
   console.log('\nCreating mixed branches...');
@@ -88,7 +92,8 @@ export const init =  () => {
       const res = {
         files: b.map((x) => x.files).reduce((x, a) => a.concat(x), []),
         patch: b.map((x) => x.patch).reduce((x, a) => `${x}\n${a}`, ''),
-        version: parseInt(b.map((x) => x.version).reduce((x, a) => `${x}0${a}`))
+        version: parseInt(b.map((x) => x.version).reduce((x, a) => `${x}0${a}`)),
+        type: 'mixed'
       };
 
       branches[key] = res;

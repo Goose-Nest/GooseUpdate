@@ -1,7 +1,7 @@
 #!/bin/sh
 # This script downloads BD's latest asar release
 
-cd "../branches/betterdiscord/"
+cd "../branches/mod/betterdiscord/"
 
 asarPath="betterdiscord.asar"
 
