@@ -4,8 +4,8 @@ cache
 
 *.log
 
-/branches/betterdiscord/betterdiscord.asar
-/branches/smartcord/smartcord
+/branches/mod/betterdiscord/betterdiscord.asar
+/branches/mod/smartcord/smartcord
 
 *.crt
 *.key
