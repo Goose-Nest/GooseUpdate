@@ -77,42 +77,4 @@
       bw.webContents.executeJavaScript(`(async function() { eval(await (await fetch('https://goosemod-api.netlify.app/untethered/untetheredInject.js')).text()); })();`);
     });
   });
-
-  // Auto migrate for users who were relying on GooseUpdate v1.x to new v2.x endpoint(s)
-
-  try {
-    log('Starting GooseUpdate v1.x -> v2.x endpoint auto-migration');
-
-    log('Checking settings.json');
-
-    const path = require('path');
-
-    const settingsPath = path.join(__dirname, '../../../settings.json');
-
-    log(settingsPath);
-
-    let settings = require(settingsPath);
-    log(settings);
-
-    const endpoint = settings.UPDATE_ENDPOINT;
-    log(endpoint);
-
-    if (endpoint.replace(/[^/]/g, '').length < 3) {
-      log('Detected v1.x endpoint - migrating');
-      const newEndpoint = `${endpoint}/goosemod`;
-      settings.UPDATE_ENDPOINT = newEndpoint;
-
-      log(newEndpoint);
-
-      const fs = require('fs');
-
-      log('Overwriting settings.json with new endpoint');
-
-      fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2));
-    } else {
-      log('Detected v2.x endpoint - skipping');
-    }
-  } catch (e) {
-    log('GooseUpdate v1.x -> v2.x endpoint auto-migration failed', e);
-  }
 })();
