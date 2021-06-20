@@ -1,6 +1,4 @@
 (async function() {
-  const version = 18;
-
   const rgb = (r, g, b, text) => `\x1b[38;2;${r};${g};${b}m${text}\x1b[0m`;
 
   const log = function() { console.log(`[${rgb(250, 250, 0, 'GooseMod')}]`, ...arguments); }
@@ -12,8 +10,6 @@
       electronProxy: require('util').types.isProxy(electron) // Many modern mods overwrite electron with a proxy with a custom BrowserWindow (copied from PowerCord)
     }
   };
-
-  log(`GooseUpdate Desktop Core Module Patch - Version ${version}`);
 
   log(otherMods);
 
