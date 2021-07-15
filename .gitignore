@@ -6,7 +6,7 @@ cache
 
 /branches/mod/betterdiscord/betterdiscord.asar
 /branches/mod/smartcord/smartcord
-/branches/mod/goosemod/ext
+/branches/mod/goosemod/GMExt
 
 *.crt
 *.key
