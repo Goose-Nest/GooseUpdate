@@ -55,22 +55,9 @@
 
   unstrictCSP();
 
-  let i = setImmediate(() => {
-    log('Attempting to get main window');
+  setImmediate(() => {
+    const { join } = require('path');
 
-    if (!global.mainWindowId) return;
-
-    log('Success, adding dom-ready handler');
-
-    clearInterval(i);
-
-    let bw = electron.BrowserWindow.fromId(global.mainWindowId);
-
-    bw.webContents.on('dom-ready', () => {
-      log('dom-ready triggered: injecting GooseMod JS');
-
-      // bw.webContents.executeJavaScript(require('fs').readFileSync('/home/duck/GooseMod/GooseMod/dist/index.js', 'utf8'));
-      bw.webContents.executeJavaScript(`(async function() { eval(await (await fetch('https://goosemod-api.netlify.app/untethered/untetheredInject.js')).text()); })();`);
-    });
+    electron.session.defaultSession.loadExtension(join(__dirname, 'GMExt'));
   });
 })();
