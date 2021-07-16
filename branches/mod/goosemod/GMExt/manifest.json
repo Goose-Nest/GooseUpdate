@@ -2,7 +2,7 @@
     "name": "GooseMod for Web",
     "description": "A light, secure, and easy to use Discord mod; now in your browser.",
 
-    "version": "1.2.0-desktop",
+    "version": "1.2.0",
 
     "icons": {
         "48": "icons/48.png",
