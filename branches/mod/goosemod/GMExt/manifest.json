@@ -4,9 +4,6 @@
 
     "version": "1.2.0",
 
-    "author": "GooseMod Team",
-    "homepage_url": "https://goosemod.com",
-
     "icons": {
         "48": "icons/48.png",
         "96": "icons/96.png",
@@ -33,11 +30,5 @@
         "*://*.discord.com/*"
     ],
 
-    "manifest_version": 2,
-
-    "browser_specific_settings": {
-        "gecko": {
-            "id": "invalid@goosemod.com"
-        }
-    }
+    "manifest_version": 2
 }
