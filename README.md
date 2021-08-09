@@ -15,7 +15,8 @@ Said directories are found below:
 * Mac:
   * `~/Library/Application Support/discord<channel>/`
 * Linux:
-  * `~/.config/discord<channel>/`
+  * Package Manager/tar.gz Installation: `~/.config/discord<channel>/`
+  * Flatpak: `~/.var/app/com.discordapp.Discord/config/discord<channel>/settings.json`
 
 Set `UPDATE_ENDPOINT` and `NEW_UPDATE_ENDPOINT` in `settings.json` as follows:
 
