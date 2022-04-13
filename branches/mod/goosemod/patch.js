@@ -5,13 +5,9 @@
 
   const electron = require('electron');
 
-  const otherMods = {
-    generic: {
-      electronProxy: require('util').types.isProxy(electron) // Many modern mods overwrite electron with a proxy with a custom BrowserWindow (copied from PowerCord)
-    }
-  };
+  const otherMod = electron.BrowserWindow.toString().includes('extends') || require('util').types.isProxy(electron);
 
-  log(otherMods);
+  log('Has other mod:', otherMod);
 
   const unstrictCSP = () => {
     log('Setting up CSP unstricter...');
@@ -31,7 +27,7 @@
     electron.session.defaultSession.webRequest.onHeadersReceived(({ responseHeaders, url }, done) => {
       let csp = responseHeaders['content-security-policy'];
 
-      if (otherMods.generic.electronProxy) { // Since patch v16, override other mod's onHeadersRecieved (Electron only allows 1 listener); because they rely on 0 CSP at all (GM just unrestricts some areas), remove it fully if we detect other mods
+      if (otherMod) { // Since patch v16, override other mod's onHeadersRecieved (Electron only allows 1 listener); because they rely on 0 CSP at all (GM just unrestricts some areas), remove it fully if we detect other mods
         delete responseHeaders['content-security-policy'];
         csp = null;
       }
@@ -55,9 +51,10 @@
 
   unstrictCSP();
 
-  setImmediate(() => {
-    const { join } = require('path');
-
-    electron.session.defaultSession.loadExtension(join(__dirname, 'GMExt'));
+  electron.app.once('web-contents-created', (e, webContents) => {
+    webContents.once('console-message', () => {
+      const { join } = require('path');
+      electron.session.defaultSession.loadExtension(join(__dirname, 'GMExt'));
+    });
   });
 })();
