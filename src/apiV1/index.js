@@ -1,4 +1,4 @@
-import { existsSync, rmdirSync, mkdirSync } from 'fs';
+import { existsSync, rmSync, mkdirSync } from 'fs';
 
 global.discordBase = global.config.apiBases?.v1 || 'https://discord.com/api';
 
@@ -19,7 +19,7 @@ global.requestCounts = {
 
 const initCache = () => {
   if (existsSync(`../cache`)) {
-    rmdirSync(`../cache`, { recursive: true });
+    rmSync(`../cache`, { recursive: true });
     //return;
   }
 
